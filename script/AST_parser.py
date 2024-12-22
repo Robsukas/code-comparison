@@ -1,5 +1,6 @@
 import ast
-
+import uuid
+from graphviz import Digraph
 
 class ASTParser:
     def parse_code(self, code_str: str):
@@ -7,9 +8,9 @@ class ASTParser:
         tree = ast.parse(code_str)
 
         # Return data that has been converted to dictionary for easier understanding and functionality
-        return self.convert_ast_to_dictionary(tree)
+        return self.convert_ast_to_dict(tree)
 
-    def convert_ast_to_dictionary(self, node):
+    def convert_ast_to_dict(self, node):
         # If lead node -> return it as it is
         if not isinstance(node, ast.AST):
             return node
@@ -26,36 +27,62 @@ class ASTParser:
             # Check field value type
             if isinstance(field_value, list):
                 # If the field is a list, process each element.
-                node_dict[field_name] = [self.convert_ast_to_dictionary(x) for x in field_value]
+                node_dict[field_name] = [self.convert_ast_to_dict(x) for x in field_value]
             else:
                 # Otherwise, just process the single field.
-                node_dict[field_name] = self.convert_ast_to_dictionary(field_value)
+                node_dict[field_name] = self.convert_ast_to_dict(field_value)
 
         return node_dict
 
-    # GPT generated beautify print, previously returned just a oneliner, which was unreadable, this is temporary
-    def print_tree(self, node_dict, indent=0):
-        prefix = ' ' * (indent * 2)
-        node_type = node_dict.get('_type', 'Unknown')
-        print(f"{prefix}{node_type}")
+    def convert_dict_to_graph(self, node_dict, graph=None, parent_id=None):
+        """
+        Recursively build a Graphviz Digraph from a nested AST dictionary.
+        - node_dict: the dictionary representing an AST node
+        - graph: a Digraph object (created once at the start)
+        - parent_id: the unique ID of the parent node (used to create edges)
+        """
+        if graph is None:
+            graph = Digraph(comment='AST Visualization', format='png')
 
-        # Print fields
+        # Create a unique ID for the current node
+        current_id = str(uuid.uuid4())
+
+        # Use the '_type' key as the label for this node
+        label = node_dict.get('_type', 'Unknown')
+        graph.node(current_id, label)
+
+        # If we have a parent node, connect it
+        if parent_id is not None:
+            graph.edge(parent_id, current_id)
+
+        # Traverse child fields
         for key, value in node_dict.items():
+            # Skip the type field itself
             if key == '_type':
                 continue
-            if isinstance(value, list):
-                print(f"{prefix}  {key}:")
+
+            if isinstance(value, dict):
+                # This is a single child node
+                self.convert_dict_to_graph(value, graph, current_id)
+            elif isinstance(value, list):
+                # This is a list of child nodes
                 for item in value:
                     if isinstance(item, dict):
-                        self.print_tree(item, indent=indent + 2)
+                        self.convert_dict_to_graph(item, graph, current_id)
                     else:
-                        print(f"{prefix}    {repr(item)}")
-            elif isinstance(value, dict):
-                print(f"{prefix}  {key}:")
-                self.print_tree(value, indent=indent + 2)
+                        # Primitive value in the list
+                        leaf_id = str(uuid.uuid4())
+                        leaf_label = f"{key}: {repr(item)}"
+                        graph.node(leaf_id, leaf_label)
+                        graph.edge(current_id, leaf_id)
             else:
-                # Print simple fields
-                print(f"{prefix}  {key}: {repr(value)}")
+                # Single primitive value
+                leaf_id = str(uuid.uuid4())
+                leaf_label = f"{key}: {repr(value)}"
+                graph.node(leaf_id, leaf_label)
+                graph.edge(current_id, leaf_id)
+
+        return graph
 
 
 if __name__ == "__main__":
@@ -73,4 +100,5 @@ print(str(number_1) + " + " + str(number_2) + " is " + str(answer))
 """
     parser = ASTParser()
     tree_dict = parser.parse_code(sample_code)
-    parser.print_tree(tree_dict)
+    ast_graph = parser.convert_dict_to_graph(tree_dict)
+    ast_graph.render('ast_graph', view=True)
