@@ -1,226 +1,216 @@
 // AST Visualization
 digraph {
-	"a32540f0-2c5f-4249-9d35-6de9015929eb" [label=Module]
-	"061f24e8-fef3-4c31-b492-6ab1af4876ce" [label=Assign]
-	"a32540f0-2c5f-4249-9d35-6de9015929eb" -> "061f24e8-fef3-4c31-b492-6ab1af4876ce"
-	"2e802f88-8193-4002-a261-bb7d68376ddf" [label=Name]
-	"061f24e8-fef3-4c31-b492-6ab1af4876ce" -> "2e802f88-8193-4002-a261-bb7d68376ddf"
-	"e1d04d09-672d-44eb-a296-b43377bce969" [label="id: 'name'"]
-	"2e802f88-8193-4002-a261-bb7d68376ddf" -> "e1d04d09-672d-44eb-a296-b43377bce969"
-	"8f0690c0-73d2-426c-abe2-7c773e9920b2" [label=Store]
-	"2e802f88-8193-4002-a261-bb7d68376ddf" -> "8f0690c0-73d2-426c-abe2-7c773e9920b2"
-	"2a523b2c-753b-461f-ae69-6e147355dc85" [label=Call]
-	"061f24e8-fef3-4c31-b492-6ab1af4876ce" -> "2a523b2c-753b-461f-ae69-6e147355dc85"
-	"91025421-8fa0-4854-9d17-5e1ee214a5e1" [label=Name]
-	"2a523b2c-753b-461f-ae69-6e147355dc85" -> "91025421-8fa0-4854-9d17-5e1ee214a5e1"
-	"2545a4d3-32c1-4a68-b10f-b70a2eb32dee" [label="id: 'input'"]
-	"91025421-8fa0-4854-9d17-5e1ee214a5e1" -> "2545a4d3-32c1-4a68-b10f-b70a2eb32dee"
-	"bbf32bc5-e347-48ff-9541-46fa362cbfc7" [label=Load]
-	"91025421-8fa0-4854-9d17-5e1ee214a5e1" -> "bbf32bc5-e347-48ff-9541-46fa362cbfc7"
-	"336ff578-e3f9-4f06-9026-13ceb7f361f4" [label=Constant]
-	"2a523b2c-753b-461f-ae69-6e147355dc85" -> "336ff578-e3f9-4f06-9026-13ceb7f361f4"
-	"bd36219d-3aa9-4882-a3d8-eb4af2a716bf" [label="value: 'What is your name? '"]
-	"336ff578-e3f9-4f06-9026-13ceb7f361f4" -> "bd36219d-3aa9-4882-a3d8-eb4af2a716bf"
-	"55ab6dcb-98d2-4e12-a8f9-23cf7eeb0e1b" [label="kind: None"]
-	"336ff578-e3f9-4f06-9026-13ceb7f361f4" -> "55ab6dcb-98d2-4e12-a8f9-23cf7eeb0e1b"
-	"b0101912-a753-4a13-922f-c9faf60e530f" [label="type_comment: None"]
-	"061f24e8-fef3-4c31-b492-6ab1af4876ce" -> "b0101912-a753-4a13-922f-c9faf60e530f"
-	"e5192c93-217a-4e62-bd3d-9b43a8cfdee0" [label=Assign]
-	"a32540f0-2c5f-4249-9d35-6de9015929eb" -> "e5192c93-217a-4e62-bd3d-9b43a8cfdee0"
-	"e6e7082e-900b-4612-b779-457762d74a79" [label=Name]
-	"e5192c93-217a-4e62-bd3d-9b43a8cfdee0" -> "e6e7082e-900b-4612-b779-457762d74a79"
-	"7a037930-1b70-4c7c-a651-d552d4a17cad" [label="id: 'number_1'"]
-	"e6e7082e-900b-4612-b779-457762d74a79" -> "7a037930-1b70-4c7c-a651-d552d4a17cad"
-	"250edf24-1a6a-4d47-b053-a6ce730ff612" [label=Store]
-	"e6e7082e-900b-4612-b779-457762d74a79" -> "250edf24-1a6a-4d47-b053-a6ce730ff612"
-	"17e6d8f2-86b8-4351-a4e2-0115331d712c" [label=Call]
-	"e5192c93-217a-4e62-bd3d-9b43a8cfdee0" -> "17e6d8f2-86b8-4351-a4e2-0115331d712c"
-	"b7470237-48cc-4fbf-8c51-2ba2cd0520f7" [label=Name]
-	"17e6d8f2-86b8-4351-a4e2-0115331d712c" -> "b7470237-48cc-4fbf-8c51-2ba2cd0520f7"
-	"79080659-7d05-4ea3-997b-0dcb5481ca67" [label="id: 'input'"]
-	"b7470237-48cc-4fbf-8c51-2ba2cd0520f7" -> "79080659-7d05-4ea3-997b-0dcb5481ca67"
-	"a7ba30ba-680b-4ef2-94af-e20cf8b46d6c" [label=Load]
-	"b7470237-48cc-4fbf-8c51-2ba2cd0520f7" -> "a7ba30ba-680b-4ef2-94af-e20cf8b46d6c"
-	"599a33e7-3a3a-4c4e-a2e0-817ec021f3de" [label=BinOp]
-	"17e6d8f2-86b8-4351-a4e2-0115331d712c" -> "599a33e7-3a3a-4c4e-a2e0-817ec021f3de"
-	"ba0e9f45-6093-41a7-8a34-359a1a6abaeb" [label=BinOp]
-	"599a33e7-3a3a-4c4e-a2e0-817ec021f3de" -> "ba0e9f45-6093-41a7-8a34-359a1a6abaeb"
-	"9542ce41-1973-4af8-a4d7-a4091056bb56" [label=Constant]
-	"ba0e9f45-6093-41a7-8a34-359a1a6abaeb" -> "9542ce41-1973-4af8-a4d7-a4091056bb56"
-	"314914bf-88a3-4ef1-a64c-82832e6284e6" [label="value: 'Hello, '"]
-	"9542ce41-1973-4af8-a4d7-a4091056bb56" -> "314914bf-88a3-4ef1-a64c-82832e6284e6"
-	"d3b25ad7-ec74-4c89-aaed-945e9ac961f0" [label="kind: None"]
-	"9542ce41-1973-4af8-a4d7-a4091056bb56" -> "d3b25ad7-ec74-4c89-aaed-945e9ac961f0"
-	"dd60e7c4-8deb-41de-8c21-4bf7b12a13bd" [label=Add]
-	"ba0e9f45-6093-41a7-8a34-359a1a6abaeb" -> "dd60e7c4-8deb-41de-8c21-4bf7b12a13bd"
-	"d2b265a8-ce00-4ebc-901e-ec1545dd6983" [label=Call]
-	"ba0e9f45-6093-41a7-8a34-359a1a6abaeb" -> "d2b265a8-ce00-4ebc-901e-ec1545dd6983"
-	"e36ca90d-4006-4ffd-b4f8-33bb5ceeb594" [label=Name]
-	"d2b265a8-ce00-4ebc-901e-ec1545dd6983" -> "e36ca90d-4006-4ffd-b4f8-33bb5ceeb594"
-	"fb9acdf7-1d07-41ce-93eb-14bc9acdf24d" [label="id: 'str'"]
-	"e36ca90d-4006-4ffd-b4f8-33bb5ceeb594" -> "fb9acdf7-1d07-41ce-93eb-14bc9acdf24d"
-	"bf8c7c44-5e6a-476f-99b1-739417ce71dc" [label=Load]
-	"e36ca90d-4006-4ffd-b4f8-33bb5ceeb594" -> "bf8c7c44-5e6a-476f-99b1-739417ce71dc"
-	"88d52081-a9d6-41f6-b67a-04a9e41b1658" [label=Name]
-	"d2b265a8-ce00-4ebc-901e-ec1545dd6983" -> "88d52081-a9d6-41f6-b67a-04a9e41b1658"
-	"c957fba3-85fa-4203-b458-8c5c7e9549f1" [label="id: 'name'"]
-	"88d52081-a9d6-41f6-b67a-04a9e41b1658" -> "c957fba3-85fa-4203-b458-8c5c7e9549f1"
-	"3bd80539-5f5c-4eaa-b8bc-0277089fec74" [label=Load]
-	"88d52081-a9d6-41f6-b67a-04a9e41b1658" -> "3bd80539-5f5c-4eaa-b8bc-0277089fec74"
-	"49c90d63-e669-464e-98a2-82d93a5b3cef" [label=Add]
-	"599a33e7-3a3a-4c4e-a2e0-817ec021f3de" -> "49c90d63-e669-464e-98a2-82d93a5b3cef"
-	"7ae45dd7-f623-407d-ac22-704de1b018c9" [label=Constant]
-	"599a33e7-3a3a-4c4e-a2e0-817ec021f3de" -> "7ae45dd7-f623-407d-ac22-704de1b018c9"
-	"ae02259d-0c8c-4b79-97c2-25a7b7dc8d24" [label="value: '! Enter a random number: '"]
-	"7ae45dd7-f623-407d-ac22-704de1b018c9" -> "ae02259d-0c8c-4b79-97c2-25a7b7dc8d24"
-	"905babb6-d9f8-48de-9e98-01047eb1ebc6" [label="kind: None"]
-	"7ae45dd7-f623-407d-ac22-704de1b018c9" -> "905babb6-d9f8-48de-9e98-01047eb1ebc6"
-	"ae7719c5-859d-438a-b52a-5100a694ea4c" [label="type_comment: None"]
-	"e5192c93-217a-4e62-bd3d-9b43a8cfdee0" -> "ae7719c5-859d-438a-b52a-5100a694ea4c"
-	"ef83412b-9679-4310-b4d0-6f03acc3944e" [label=Assign]
-	"a32540f0-2c5f-4249-9d35-6de9015929eb" -> "ef83412b-9679-4310-b4d0-6f03acc3944e"
-	"a400ddcc-e0a6-491a-9d92-4ba70a77cfab" [label=Name]
-	"ef83412b-9679-4310-b4d0-6f03acc3944e" -> "a400ddcc-e0a6-491a-9d92-4ba70a77cfab"
-	"09568a57-0f79-4065-a701-3e7704c1176f" [label="id: 'number_2'"]
-	"a400ddcc-e0a6-491a-9d92-4ba70a77cfab" -> "09568a57-0f79-4065-a701-3e7704c1176f"
-	"f300d292-e152-4674-9ad8-3ba34e83726a" [label=Store]
-	"a400ddcc-e0a6-491a-9d92-4ba70a77cfab" -> "f300d292-e152-4674-9ad8-3ba34e83726a"
-	"9c4c826c-ecdb-4e42-bc49-33c87ea51a7e" [label=Call]
-	"ef83412b-9679-4310-b4d0-6f03acc3944e" -> "9c4c826c-ecdb-4e42-bc49-33c87ea51a7e"
-	"91b54a55-249b-40e8-a72d-e4472403ae7b" [label=Name]
-	"9c4c826c-ecdb-4e42-bc49-33c87ea51a7e" -> "91b54a55-249b-40e8-a72d-e4472403ae7b"
-	"34a7251f-2a04-42af-9516-44beefda0c3c" [label="id: 'input'"]
-	"91b54a55-249b-40e8-a72d-e4472403ae7b" -> "34a7251f-2a04-42af-9516-44beefda0c3c"
-	"2f62f34c-6c60-4710-958a-4165fd090836" [label=Load]
-	"91b54a55-249b-40e8-a72d-e4472403ae7b" -> "2f62f34c-6c60-4710-958a-4165fd090836"
-	"6a6b9c94-7e52-4257-adbb-a6f5f1bdbd5b" [label=Constant]
-	"9c4c826c-ecdb-4e42-bc49-33c87ea51a7e" -> "6a6b9c94-7e52-4257-adbb-a6f5f1bdbd5b"
-	"7e090a93-373f-4804-b8d8-4838fb08265e" [label="value: 'Great! Now enter a second random number: '"]
-	"6a6b9c94-7e52-4257-adbb-a6f5f1bdbd5b" -> "7e090a93-373f-4804-b8d8-4838fb08265e"
-	"df5ade73-616b-412a-aee8-c56ffa55ccbf" [label="kind: None"]
-	"6a6b9c94-7e52-4257-adbb-a6f5f1bdbd5b" -> "df5ade73-616b-412a-aee8-c56ffa55ccbf"
-	"9164d55b-de34-428b-ade0-517774d2ab28" [label="type_comment: None"]
-	"ef83412b-9679-4310-b4d0-6f03acc3944e" -> "9164d55b-de34-428b-ade0-517774d2ab28"
-	"808ccedc-3f5d-44ad-8561-233bd81d6c73" [label=Assign]
-	"a32540f0-2c5f-4249-9d35-6de9015929eb" -> "808ccedc-3f5d-44ad-8561-233bd81d6c73"
-	"f0cfeefa-c37c-4d21-a62a-54677c3c4ec7" [label=Name]
-	"808ccedc-3f5d-44ad-8561-233bd81d6c73" -> "f0cfeefa-c37c-4d21-a62a-54677c3c4ec7"
-	"de56ffda-f1f8-4651-a75d-87fc47993553" [label="id: 'answer'"]
-	"f0cfeefa-c37c-4d21-a62a-54677c3c4ec7" -> "de56ffda-f1f8-4651-a75d-87fc47993553"
-	"48e942c2-ea2f-4048-a10b-f5f2bc7cb35e" [label=Store]
-	"f0cfeefa-c37c-4d21-a62a-54677c3c4ec7" -> "48e942c2-ea2f-4048-a10b-f5f2bc7cb35e"
-	"027f49bb-941f-4293-b0af-a81e92a8b7af" [label=BinOp]
-	"808ccedc-3f5d-44ad-8561-233bd81d6c73" -> "027f49bb-941f-4293-b0af-a81e92a8b7af"
-	"b44c7b52-60c6-4621-9614-5e26a620f24a" [label=Call]
-	"027f49bb-941f-4293-b0af-a81e92a8b7af" -> "b44c7b52-60c6-4621-9614-5e26a620f24a"
-	"f59dc56a-6205-45a8-b4de-5be02081fc2e" [label=Name]
-	"b44c7b52-60c6-4621-9614-5e26a620f24a" -> "f59dc56a-6205-45a8-b4de-5be02081fc2e"
-	"153d1ca7-be79-46e8-a423-4997c63af7d5" [label="id: 'int'"]
-	"f59dc56a-6205-45a8-b4de-5be02081fc2e" -> "153d1ca7-be79-46e8-a423-4997c63af7d5"
-	"7e65500c-f23f-4f91-a1e6-a11310cd7b33" [label=Load]
-	"f59dc56a-6205-45a8-b4de-5be02081fc2e" -> "7e65500c-f23f-4f91-a1e6-a11310cd7b33"
-	"27117b87-e210-43cc-b547-da16b2b42d0c" [label=Name]
-	"b44c7b52-60c6-4621-9614-5e26a620f24a" -> "27117b87-e210-43cc-b547-da16b2b42d0c"
-	"c586842f-c0ab-4882-bdee-6860bd8b1e28" [label="id: 'number_1'"]
-	"27117b87-e210-43cc-b547-da16b2b42d0c" -> "c586842f-c0ab-4882-bdee-6860bd8b1e28"
-	"ebf985cb-f028-4fd9-a6e8-b2c89be2a86f" [label=Load]
-	"27117b87-e210-43cc-b547-da16b2b42d0c" -> "ebf985cb-f028-4fd9-a6e8-b2c89be2a86f"
-	"23d060a5-6868-4af5-a096-054bf87d2f74" [label=Add]
-	"027f49bb-941f-4293-b0af-a81e92a8b7af" -> "23d060a5-6868-4af5-a096-054bf87d2f74"
-	"3a802207-4eee-4034-a2ad-9ba537c13723" [label=Call]
-	"027f49bb-941f-4293-b0af-a81e92a8b7af" -> "3a802207-4eee-4034-a2ad-9ba537c13723"
-	"74fcf6de-73eb-4488-b161-48ff8a65a1e1" [label=Name]
-	"3a802207-4eee-4034-a2ad-9ba537c13723" -> "74fcf6de-73eb-4488-b161-48ff8a65a1e1"
-	"a6292e23-5acd-4c90-9382-86970c21f958" [label="id: 'int'"]
-	"74fcf6de-73eb-4488-b161-48ff8a65a1e1" -> "a6292e23-5acd-4c90-9382-86970c21f958"
-	"cd203c6c-1400-4ee2-9a18-ae98853008bb" [label=Load]
-	"74fcf6de-73eb-4488-b161-48ff8a65a1e1" -> "cd203c6c-1400-4ee2-9a18-ae98853008bb"
-	"6bdb3939-e702-46ed-a049-cbee7c127f15" [label=Name]
-	"3a802207-4eee-4034-a2ad-9ba537c13723" -> "6bdb3939-e702-46ed-a049-cbee7c127f15"
-	"0632cecf-cfbe-493b-aca5-d7044930ba2f" [label="id: 'number_2'"]
-	"6bdb3939-e702-46ed-a049-cbee7c127f15" -> "0632cecf-cfbe-493b-aca5-d7044930ba2f"
-	"899cda84-6ad8-489e-8e7f-a9d4e2d34a84" [label=Load]
-	"6bdb3939-e702-46ed-a049-cbee7c127f15" -> "899cda84-6ad8-489e-8e7f-a9d4e2d34a84"
-	"fba1b910-7fa0-43aa-8e21-ec86d93abfb6" [label="type_comment: None"]
-	"808ccedc-3f5d-44ad-8561-233bd81d6c73" -> "fba1b910-7fa0-43aa-8e21-ec86d93abfb6"
-	"6de60665-7f6f-4e1d-bee7-76128f2e72c2" [label=Expr]
-	"a32540f0-2c5f-4249-9d35-6de9015929eb" -> "6de60665-7f6f-4e1d-bee7-76128f2e72c2"
-	"75a6df43-77f8-429f-b6d8-f5baf54898fb" [label=Call]
-	"6de60665-7f6f-4e1d-bee7-76128f2e72c2" -> "75a6df43-77f8-429f-b6d8-f5baf54898fb"
-	"c0e7521e-aaad-4729-8a71-f24487b0fe7d" [label=Name]
-	"75a6df43-77f8-429f-b6d8-f5baf54898fb" -> "c0e7521e-aaad-4729-8a71-f24487b0fe7d"
-	"cb27eafe-b797-4415-b064-4f7dbfa70ca1" [label="id: 'print'"]
-	"c0e7521e-aaad-4729-8a71-f24487b0fe7d" -> "cb27eafe-b797-4415-b064-4f7dbfa70ca1"
-	"a33fb16f-75d9-4a8b-9b31-11bf94adb96d" [label=Load]
-	"c0e7521e-aaad-4729-8a71-f24487b0fe7d" -> "a33fb16f-75d9-4a8b-9b31-11bf94adb96d"
-	"24ab982f-61b5-45d0-94b8-68700668b8d2" [label=BinOp]
-	"75a6df43-77f8-429f-b6d8-f5baf54898fb" -> "24ab982f-61b5-45d0-94b8-68700668b8d2"
-	"ec08c4df-ce51-4b66-b87b-2bd3f772a700" [label=BinOp]
-	"24ab982f-61b5-45d0-94b8-68700668b8d2" -> "ec08c4df-ce51-4b66-b87b-2bd3f772a700"
-	"13a0e7fe-ef8e-48db-923d-6c9f8abf04bb" [label=BinOp]
-	"ec08c4df-ce51-4b66-b87b-2bd3f772a700" -> "13a0e7fe-ef8e-48db-923d-6c9f8abf04bb"
-	"7f7fbeec-1bf7-4e23-9c45-02affafd5875" [label=BinOp]
-	"13a0e7fe-ef8e-48db-923d-6c9f8abf04bb" -> "7f7fbeec-1bf7-4e23-9c45-02affafd5875"
-	"3d1c5a11-3bc2-45e5-8743-95309af86a84" [label=Call]
-	"7f7fbeec-1bf7-4e23-9c45-02affafd5875" -> "3d1c5a11-3bc2-45e5-8743-95309af86a84"
-	"db4a2dbc-007e-4c6d-98d1-4ce23d78b421" [label=Name]
-	"3d1c5a11-3bc2-45e5-8743-95309af86a84" -> "db4a2dbc-007e-4c6d-98d1-4ce23d78b421"
-	"c7d68b97-466d-4e85-9280-99cc8bd09df2" [label="id: 'str'"]
-	"db4a2dbc-007e-4c6d-98d1-4ce23d78b421" -> "c7d68b97-466d-4e85-9280-99cc8bd09df2"
-	"baf87867-383a-4b53-bd71-bd621b2c929e" [label=Load]
-	"db4a2dbc-007e-4c6d-98d1-4ce23d78b421" -> "baf87867-383a-4b53-bd71-bd621b2c929e"
-	"d2044ea0-1bb9-4614-89e7-fc9159e5c2e1" [label=Name]
-	"3d1c5a11-3bc2-45e5-8743-95309af86a84" -> "d2044ea0-1bb9-4614-89e7-fc9159e5c2e1"
-	"e02075f9-d309-4ac1-85b6-236abd68d227" [label="id: 'number_1'"]
-	"d2044ea0-1bb9-4614-89e7-fc9159e5c2e1" -> "e02075f9-d309-4ac1-85b6-236abd68d227"
-	"c716b042-3626-4924-8873-1cdcecd20f25" [label=Load]
-	"d2044ea0-1bb9-4614-89e7-fc9159e5c2e1" -> "c716b042-3626-4924-8873-1cdcecd20f25"
-	"1a59d5ee-c4a4-4245-8b23-8d06842c3cfe" [label=Add]
-	"7f7fbeec-1bf7-4e23-9c45-02affafd5875" -> "1a59d5ee-c4a4-4245-8b23-8d06842c3cfe"
-	"3ef1d2be-d34e-4a5a-b0db-3e3e570ed378" [label=Constant]
-	"7f7fbeec-1bf7-4e23-9c45-02affafd5875" -> "3ef1d2be-d34e-4a5a-b0db-3e3e570ed378"
-	"5d863e0c-ee36-4643-811b-eecf84612136" [label="value: ' + '"]
-	"3ef1d2be-d34e-4a5a-b0db-3e3e570ed378" -> "5d863e0c-ee36-4643-811b-eecf84612136"
-	"d8ba46cb-1421-4f1c-a239-48c1d66a21b9" [label="kind: None"]
-	"3ef1d2be-d34e-4a5a-b0db-3e3e570ed378" -> "d8ba46cb-1421-4f1c-a239-48c1d66a21b9"
-	"0c0b1c1c-e998-4107-b9b1-2c8900d73d4e" [label=Add]
-	"13a0e7fe-ef8e-48db-923d-6c9f8abf04bb" -> "0c0b1c1c-e998-4107-b9b1-2c8900d73d4e"
-	"132bc056-0540-406f-81f4-0532912084f7" [label=Call]
-	"13a0e7fe-ef8e-48db-923d-6c9f8abf04bb" -> "132bc056-0540-406f-81f4-0532912084f7"
-	"9bb6ffca-282d-4890-9e1a-980f87f8b01a" [label=Name]
-	"132bc056-0540-406f-81f4-0532912084f7" -> "9bb6ffca-282d-4890-9e1a-980f87f8b01a"
-	"6ee69d16-1e80-4788-b0e1-3b2453f21117" [label="id: 'str'"]
-	"9bb6ffca-282d-4890-9e1a-980f87f8b01a" -> "6ee69d16-1e80-4788-b0e1-3b2453f21117"
-	"5db0ad0c-dce5-4e53-8b4e-20f75df823c6" [label=Load]
-	"9bb6ffca-282d-4890-9e1a-980f87f8b01a" -> "5db0ad0c-dce5-4e53-8b4e-20f75df823c6"
-	"5f189d02-2c12-42b4-9437-4aa9afb78d4c" [label=Name]
-	"132bc056-0540-406f-81f4-0532912084f7" -> "5f189d02-2c12-42b4-9437-4aa9afb78d4c"
-	"ed4149b5-a8c2-4c66-bd4f-61f9ec09e425" [label="id: 'number_2'"]
-	"5f189d02-2c12-42b4-9437-4aa9afb78d4c" -> "ed4149b5-a8c2-4c66-bd4f-61f9ec09e425"
-	"437d76be-e0cc-4db5-93ad-a79d7d110694" [label=Load]
-	"5f189d02-2c12-42b4-9437-4aa9afb78d4c" -> "437d76be-e0cc-4db5-93ad-a79d7d110694"
-	"36b8808c-e636-4e48-9acb-b007de8af380" [label=Add]
-	"ec08c4df-ce51-4b66-b87b-2bd3f772a700" -> "36b8808c-e636-4e48-9acb-b007de8af380"
-	"bd75a522-cd5d-40ba-8fb5-184160f30b1e" [label=Constant]
-	"ec08c4df-ce51-4b66-b87b-2bd3f772a700" -> "bd75a522-cd5d-40ba-8fb5-184160f30b1e"
-	"08e3adca-91a1-40ab-844c-f4850a76e039" [label="value: ' is '"]
-	"bd75a522-cd5d-40ba-8fb5-184160f30b1e" -> "08e3adca-91a1-40ab-844c-f4850a76e039"
-	"fb6ecda0-afeb-4b05-9a95-2f5ae22cb779" [label="kind: None"]
-	"bd75a522-cd5d-40ba-8fb5-184160f30b1e" -> "fb6ecda0-afeb-4b05-9a95-2f5ae22cb779"
-	"7809a7e1-45c1-4e71-b6ff-f8476de84120" [label=Add]
-	"24ab982f-61b5-45d0-94b8-68700668b8d2" -> "7809a7e1-45c1-4e71-b6ff-f8476de84120"
-	"4ce08c92-58ba-4141-9492-92bf7c38e6ce" [label=Call]
-	"24ab982f-61b5-45d0-94b8-68700668b8d2" -> "4ce08c92-58ba-4141-9492-92bf7c38e6ce"
-	"94f67736-bd9e-493b-925f-384f30ac90fe" [label=Name]
-	"4ce08c92-58ba-4141-9492-92bf7c38e6ce" -> "94f67736-bd9e-493b-925f-384f30ac90fe"
-	"6de6361e-9100-44fa-94f0-71f68de01af6" [label="id: 'str'"]
-	"94f67736-bd9e-493b-925f-384f30ac90fe" -> "6de6361e-9100-44fa-94f0-71f68de01af6"
-	"dfa11642-1ac6-4bd8-a3ae-d6b20297394a" [label=Load]
-	"94f67736-bd9e-493b-925f-384f30ac90fe" -> "dfa11642-1ac6-4bd8-a3ae-d6b20297394a"
-	"8499c1c8-cb4b-4c96-a9f6-232ecee3fa5b" [label=Name]
-	"4ce08c92-58ba-4141-9492-92bf7c38e6ce" -> "8499c1c8-cb4b-4c96-a9f6-232ecee3fa5b"
-	"451ed4c2-4fd7-485a-a354-430da0811b36" [label="id: 'answer'"]
-	"8499c1c8-cb4b-4c96-a9f6-232ecee3fa5b" -> "451ed4c2-4fd7-485a-a354-430da0811b36"
-	"3e819589-05f6-464a-b875-6ecb7f8c4b8d" [label=Load]
-	"8499c1c8-cb4b-4c96-a9f6-232ecee3fa5b" -> "3e819589-05f6-464a-b875-6ecb7f8c4b8d"
+	"0b6e3bf5-2d55-42a0-86af-5cf1d971976f" [label=Module]
+	"04356141-3982-4434-b99b-f7c27515eacb" [label=FunctionDef]
+	"0b6e3bf5-2d55-42a0-86af-5cf1d971976f" -> "04356141-3982-4434-b99b-f7c27515eacb"
+	"5eb0e9a9-72c5-4d37-9cf7-78dbca225eb8" [label="name: 'find_id_code'"]
+	"04356141-3982-4434-b99b-f7c27515eacb" -> "5eb0e9a9-72c5-4d37-9cf7-78dbca225eb8"
+	"56508c46-bc28-4e4a-87b2-8258ffd5a83f" [label=arguments]
+	"04356141-3982-4434-b99b-f7c27515eacb" -> "56508c46-bc28-4e4a-87b2-8258ffd5a83f"
+	"dc369dde-68cf-4c8c-9d20-b5c04437ac88" [label=arg]
+	"56508c46-bc28-4e4a-87b2-8258ffd5a83f" -> "dc369dde-68cf-4c8c-9d20-b5c04437ac88"
+	"a4c4ba32-085a-4124-983b-72986a282020" [label="arg: 'text'"]
+	"dc369dde-68cf-4c8c-9d20-b5c04437ac88" -> "a4c4ba32-085a-4124-983b-72986a282020"
+	"d92e5f14-b3e9-459a-9818-5bed1844e74e" [label=Name]
+	"dc369dde-68cf-4c8c-9d20-b5c04437ac88" -> "d92e5f14-b3e9-459a-9818-5bed1844e74e"
+	"8a9e5fa3-a9e9-420b-954c-6189651f2aa2" [label="id: 'str'"]
+	"d92e5f14-b3e9-459a-9818-5bed1844e74e" -> "8a9e5fa3-a9e9-420b-954c-6189651f2aa2"
+	"daf9d5c6-7b2c-4531-b56c-fee6d4b804cc" [label=Load]
+	"d92e5f14-b3e9-459a-9818-5bed1844e74e" -> "daf9d5c6-7b2c-4531-b56c-fee6d4b804cc"
+	"7457a429-0a75-42a3-8872-e22410b4c925" [label="type_comment: None"]
+	"dc369dde-68cf-4c8c-9d20-b5c04437ac88" -> "7457a429-0a75-42a3-8872-e22410b4c925"
+	"072ef5ff-65c6-47e6-a2a1-cb9b8570e255" [label="vararg: None"]
+	"56508c46-bc28-4e4a-87b2-8258ffd5a83f" -> "072ef5ff-65c6-47e6-a2a1-cb9b8570e255"
+	"2c6be727-aeca-4b48-893d-e9f10c1ba331" [label="kwarg: None"]
+	"56508c46-bc28-4e4a-87b2-8258ffd5a83f" -> "2c6be727-aeca-4b48-893d-e9f10c1ba331"
+	"6e2f2088-d765-4424-8c86-e894033bc335" [label=Assign]
+	"04356141-3982-4434-b99b-f7c27515eacb" -> "6e2f2088-d765-4424-8c86-e894033bc335"
+	"d01c575d-0af6-4829-99b5-be90db3e2742" [label=Name]
+	"6e2f2088-d765-4424-8c86-e894033bc335" -> "d01c575d-0af6-4829-99b5-be90db3e2742"
+	"33d43336-76e1-4454-99d9-48b35f26f111" [label="id: 'result'"]
+	"d01c575d-0af6-4829-99b5-be90db3e2742" -> "33d43336-76e1-4454-99d9-48b35f26f111"
+	"49cb4d7a-73cf-431d-99b6-796ef20fa7c3" [label=Store]
+	"d01c575d-0af6-4829-99b5-be90db3e2742" -> "49cb4d7a-73cf-431d-99b6-796ef20fa7c3"
+	"fc3c7aae-d1e9-4972-a8c1-e859a39d4fcc" [label=Constant]
+	"6e2f2088-d765-4424-8c86-e894033bc335" -> "fc3c7aae-d1e9-4972-a8c1-e859a39d4fcc"
+	"68793f96-33f3-4a97-847e-bb05ab865b00" [label="value: ''"]
+	"fc3c7aae-d1e9-4972-a8c1-e859a39d4fcc" -> "68793f96-33f3-4a97-847e-bb05ab865b00"
+	"816015b0-a363-4757-afa3-b2ff0d480c7c" [label="kind: None"]
+	"fc3c7aae-d1e9-4972-a8c1-e859a39d4fcc" -> "816015b0-a363-4757-afa3-b2ff0d480c7c"
+	"cdd91606-4509-483c-b14a-7be0c42be114" [label="type_comment: None"]
+	"6e2f2088-d765-4424-8c86-e894033bc335" -> "cdd91606-4509-483c-b14a-7be0c42be114"
+	"1ee29ab3-2142-44fb-8d18-16fbf7c2a3e2" [label=For]
+	"04356141-3982-4434-b99b-f7c27515eacb" -> "1ee29ab3-2142-44fb-8d18-16fbf7c2a3e2"
+	"4674b9f4-a61e-4c67-bc59-2712b00314fd" [label=Name]
+	"1ee29ab3-2142-44fb-8d18-16fbf7c2a3e2" -> "4674b9f4-a61e-4c67-bc59-2712b00314fd"
+	"ddcf352b-c166-4e1b-b716-3d78601b88ca" [label="id: 'i'"]
+	"4674b9f4-a61e-4c67-bc59-2712b00314fd" -> "ddcf352b-c166-4e1b-b716-3d78601b88ca"
+	"63e3b26b-ff1a-4ca3-ace9-ac24f49d8a85" [label=Store]
+	"4674b9f4-a61e-4c67-bc59-2712b00314fd" -> "63e3b26b-ff1a-4ca3-ace9-ac24f49d8a85"
+	"cfa68343-9506-4b92-999e-c43a8e2a94bf" [label=Call]
+	"1ee29ab3-2142-44fb-8d18-16fbf7c2a3e2" -> "cfa68343-9506-4b92-999e-c43a8e2a94bf"
+	"5dd069a4-7eab-4214-a14f-2f84e0d7da23" [label=Name]
+	"cfa68343-9506-4b92-999e-c43a8e2a94bf" -> "5dd069a4-7eab-4214-a14f-2f84e0d7da23"
+	"89b8a51b-db5f-47cf-87a0-ea13070e3229" [label="id: 'range'"]
+	"5dd069a4-7eab-4214-a14f-2f84e0d7da23" -> "89b8a51b-db5f-47cf-87a0-ea13070e3229"
+	"ee0551ae-072b-47d0-a8e7-2d06a6e78d8e" [label=Load]
+	"5dd069a4-7eab-4214-a14f-2f84e0d7da23" -> "ee0551ae-072b-47d0-a8e7-2d06a6e78d8e"
+	"318d7bd0-426a-42f6-b190-bd6b1aa026b8" [label=Call]
+	"cfa68343-9506-4b92-999e-c43a8e2a94bf" -> "318d7bd0-426a-42f6-b190-bd6b1aa026b8"
+	"43b17f54-a553-4f4f-8cdb-6d80d74ae272" [label=Name]
+	"318d7bd0-426a-42f6-b190-bd6b1aa026b8" -> "43b17f54-a553-4f4f-8cdb-6d80d74ae272"
+	"11f0692a-a573-40a2-8c0c-c0c5b040be89" [label="id: 'len'"]
+	"43b17f54-a553-4f4f-8cdb-6d80d74ae272" -> "11f0692a-a573-40a2-8c0c-c0c5b040be89"
+	"6e93a584-9735-4188-8d30-7f8f60464386" [label=Load]
+	"43b17f54-a553-4f4f-8cdb-6d80d74ae272" -> "6e93a584-9735-4188-8d30-7f8f60464386"
+	"2cb595b3-be41-4365-8072-7eb4357d9aac" [label=Name]
+	"318d7bd0-426a-42f6-b190-bd6b1aa026b8" -> "2cb595b3-be41-4365-8072-7eb4357d9aac"
+	"f38135a3-3221-4c60-a34b-caf3fc887355" [label="id: 'text'"]
+	"2cb595b3-be41-4365-8072-7eb4357d9aac" -> "f38135a3-3221-4c60-a34b-caf3fc887355"
+	"74fcf545-2dd6-44ad-ba6c-d224d29f6ae4" [label=Load]
+	"2cb595b3-be41-4365-8072-7eb4357d9aac" -> "74fcf545-2dd6-44ad-ba6c-d224d29f6ae4"
+	"034eacd4-4cb9-423e-8ce3-d5f80255edc6" [label=Assign]
+	"1ee29ab3-2142-44fb-8d18-16fbf7c2a3e2" -> "034eacd4-4cb9-423e-8ce3-d5f80255edc6"
+	"90795f37-3b73-4171-aede-0328c01823cb" [label=Name]
+	"034eacd4-4cb9-423e-8ce3-d5f80255edc6" -> "90795f37-3b73-4171-aede-0328c01823cb"
+	"8a2c3de8-aa32-4041-85bf-9f8f25101a8d" [label="id: 'char'"]
+	"90795f37-3b73-4171-aede-0328c01823cb" -> "8a2c3de8-aa32-4041-85bf-9f8f25101a8d"
+	"94589053-5ced-46f1-8317-5f022d91fe2c" [label=Store]
+	"90795f37-3b73-4171-aede-0328c01823cb" -> "94589053-5ced-46f1-8317-5f022d91fe2c"
+	"9981f3b3-5bfb-46d7-a7cb-962b5fdebbc8" [label=Subscript]
+	"034eacd4-4cb9-423e-8ce3-d5f80255edc6" -> "9981f3b3-5bfb-46d7-a7cb-962b5fdebbc8"
+	"a0cc5d7d-99b4-4d5d-8aaf-0d87c83e780e" [label=Name]
+	"9981f3b3-5bfb-46d7-a7cb-962b5fdebbc8" -> "a0cc5d7d-99b4-4d5d-8aaf-0d87c83e780e"
+	"44e1c5bc-6538-4c5b-ae70-8b62a24b10ca" [label="id: 'text'"]
+	"a0cc5d7d-99b4-4d5d-8aaf-0d87c83e780e" -> "44e1c5bc-6538-4c5b-ae70-8b62a24b10ca"
+	"948b9ee6-16c5-4766-9ad4-f92355e875eb" [label=Load]
+	"a0cc5d7d-99b4-4d5d-8aaf-0d87c83e780e" -> "948b9ee6-16c5-4766-9ad4-f92355e875eb"
+	"c8a8f724-4672-4348-abde-dd59227587c5" [label=Name]
+	"9981f3b3-5bfb-46d7-a7cb-962b5fdebbc8" -> "c8a8f724-4672-4348-abde-dd59227587c5"
+	"b2d4d494-9c5e-4593-ab9e-b54dccbb3a8e" [label="id: 'i'"]
+	"c8a8f724-4672-4348-abde-dd59227587c5" -> "b2d4d494-9c5e-4593-ab9e-b54dccbb3a8e"
+	"e5bad3be-2c10-4d86-9d3c-4d70773c4af4" [label=Load]
+	"c8a8f724-4672-4348-abde-dd59227587c5" -> "e5bad3be-2c10-4d86-9d3c-4d70773c4af4"
+	"df2646ae-0ad8-44c8-a277-58cd00628922" [label=Load]
+	"9981f3b3-5bfb-46d7-a7cb-962b5fdebbc8" -> "df2646ae-0ad8-44c8-a277-58cd00628922"
+	"0a9b4e1c-7fef-407b-a6f1-0f8d53932c67" [label="type_comment: None"]
+	"034eacd4-4cb9-423e-8ce3-d5f80255edc6" -> "0a9b4e1c-7fef-407b-a6f1-0f8d53932c67"
+	"a2edbf31-9f75-4e82-aa4a-5a55ad0cc205" [label=If]
+	"1ee29ab3-2142-44fb-8d18-16fbf7c2a3e2" -> "a2edbf31-9f75-4e82-aa4a-5a55ad0cc205"
+	"7e11d9ef-1af0-43bd-94ab-09962d327928" [label=Call]
+	"a2edbf31-9f75-4e82-aa4a-5a55ad0cc205" -> "7e11d9ef-1af0-43bd-94ab-09962d327928"
+	"f22ce941-6c3d-46ae-9f61-19b4e0053319" [label=Attribute]
+	"7e11d9ef-1af0-43bd-94ab-09962d327928" -> "f22ce941-6c3d-46ae-9f61-19b4e0053319"
+	"ca0a4259-79d7-4f6b-af0b-af0c741310c1" [label=Name]
+	"f22ce941-6c3d-46ae-9f61-19b4e0053319" -> "ca0a4259-79d7-4f6b-af0b-af0c741310c1"
+	"82f8c55d-e1c6-46ae-a97f-958d1c1acda9" [label="id: 'char'"]
+	"ca0a4259-79d7-4f6b-af0b-af0c741310c1" -> "82f8c55d-e1c6-46ae-a97f-958d1c1acda9"
+	"53c18a33-69e0-42c9-b4fa-12281056c512" [label=Load]
+	"ca0a4259-79d7-4f6b-af0b-af0c741310c1" -> "53c18a33-69e0-42c9-b4fa-12281056c512"
+	"431eda02-1adb-45a5-8f34-cd665b335d87" [label="attr: 'isdigit'"]
+	"f22ce941-6c3d-46ae-9f61-19b4e0053319" -> "431eda02-1adb-45a5-8f34-cd665b335d87"
+	"fbfc4302-5234-4f71-87e0-22794622fa4e" [label=Load]
+	"f22ce941-6c3d-46ae-9f61-19b4e0053319" -> "fbfc4302-5234-4f71-87e0-22794622fa4e"
+	"b38b2a61-2ac9-4260-8964-2df791548998" [label=AugAssign]
+	"a2edbf31-9f75-4e82-aa4a-5a55ad0cc205" -> "b38b2a61-2ac9-4260-8964-2df791548998"
+	"d29e8662-185d-46d3-8cb0-d870e1f77128" [label=Name]
+	"b38b2a61-2ac9-4260-8964-2df791548998" -> "d29e8662-185d-46d3-8cb0-d870e1f77128"
+	"3656c9c0-9fc1-4783-a520-9bf15fddb385" [label="id: 'result'"]
+	"d29e8662-185d-46d3-8cb0-d870e1f77128" -> "3656c9c0-9fc1-4783-a520-9bf15fddb385"
+	"1479f642-9015-4dae-b678-b63e7799d1f4" [label=Store]
+	"d29e8662-185d-46d3-8cb0-d870e1f77128" -> "1479f642-9015-4dae-b678-b63e7799d1f4"
+	"4d0c9cdd-be32-4c3c-86ea-87b611be7b7c" [label=Add]
+	"b38b2a61-2ac9-4260-8964-2df791548998" -> "4d0c9cdd-be32-4c3c-86ea-87b611be7b7c"
+	"10f14ee6-7f04-4b92-89f3-65d1d09e7b19" [label=Name]
+	"b38b2a61-2ac9-4260-8964-2df791548998" -> "10f14ee6-7f04-4b92-89f3-65d1d09e7b19"
+	"6745b5a8-6d7a-4bf8-810b-26cb6d51ed05" [label="id: 'char'"]
+	"10f14ee6-7f04-4b92-89f3-65d1d09e7b19" -> "6745b5a8-6d7a-4bf8-810b-26cb6d51ed05"
+	"c88e1dea-0fe7-4375-a8a2-9541d3637a00" [label=Load]
+	"10f14ee6-7f04-4b92-89f3-65d1d09e7b19" -> "c88e1dea-0fe7-4375-a8a2-9541d3637a00"
+	"69e36d0f-8dc3-46bd-a57c-0007e5419a0f" [label="type_comment: None"]
+	"1ee29ab3-2142-44fb-8d18-16fbf7c2a3e2" -> "69e36d0f-8dc3-46bd-a57c-0007e5419a0f"
+	"a811bdab-9d4c-47b7-a895-df95d3b704c1" [label=If]
+	"04356141-3982-4434-b99b-f7c27515eacb" -> "a811bdab-9d4c-47b7-a895-df95d3b704c1"
+	"d13a0973-784e-4b07-b8ba-3d1fd6ce0125" [label=Compare]
+	"a811bdab-9d4c-47b7-a895-df95d3b704c1" -> "d13a0973-784e-4b07-b8ba-3d1fd6ce0125"
+	"59a3470a-6163-4cee-8659-b05630439a88" [label=Call]
+	"d13a0973-784e-4b07-b8ba-3d1fd6ce0125" -> "59a3470a-6163-4cee-8659-b05630439a88"
+	"322e01c3-28c3-42a8-abb4-9413f4e0f220" [label=Name]
+	"59a3470a-6163-4cee-8659-b05630439a88" -> "322e01c3-28c3-42a8-abb4-9413f4e0f220"
+	"0607993d-97bc-4dd3-b8b2-81690527c8ad" [label="id: 'len'"]
+	"322e01c3-28c3-42a8-abb4-9413f4e0f220" -> "0607993d-97bc-4dd3-b8b2-81690527c8ad"
+	"9fb11dbc-ca8e-415d-8504-d515c1c7a947" [label=Load]
+	"322e01c3-28c3-42a8-abb4-9413f4e0f220" -> "9fb11dbc-ca8e-415d-8504-d515c1c7a947"
+	"4b02364c-18a8-4caa-bbf7-b47f8abfd1b8" [label=Name]
+	"59a3470a-6163-4cee-8659-b05630439a88" -> "4b02364c-18a8-4caa-bbf7-b47f8abfd1b8"
+	"fe5857e1-cb31-4c7f-947c-67b443bfafe0" [label="id: 'result'"]
+	"4b02364c-18a8-4caa-bbf7-b47f8abfd1b8" -> "fe5857e1-cb31-4c7f-947c-67b443bfafe0"
+	"cf413b4b-d819-4e80-a86e-e2a07ba9ee92" [label=Load]
+	"4b02364c-18a8-4caa-bbf7-b47f8abfd1b8" -> "cf413b4b-d819-4e80-a86e-e2a07ba9ee92"
+	"0eb97921-3191-4520-8c55-4819c15e1743" [label=Gt]
+	"d13a0973-784e-4b07-b8ba-3d1fd6ce0125" -> "0eb97921-3191-4520-8c55-4819c15e1743"
+	"315f67ff-cb5d-4581-8b52-b154cb614f20" [label=Constant]
+	"d13a0973-784e-4b07-b8ba-3d1fd6ce0125" -> "315f67ff-cb5d-4581-8b52-b154cb614f20"
+	"ff38ab0f-b751-4c75-bc6f-cd30927945cc" [label="value: 11"]
+	"315f67ff-cb5d-4581-8b52-b154cb614f20" -> "ff38ab0f-b751-4c75-bc6f-cd30927945cc"
+	"698aec7f-d054-4d6c-969f-582caacbba8d" [label="kind: None"]
+	"315f67ff-cb5d-4581-8b52-b154cb614f20" -> "698aec7f-d054-4d6c-969f-582caacbba8d"
+	"a7dd216d-5f72-4f01-9b5a-f4312306c8f3" [label=Return]
+	"a811bdab-9d4c-47b7-a895-df95d3b704c1" -> "a7dd216d-5f72-4f01-9b5a-f4312306c8f3"
+	"8c0b22fb-7140-4bc9-ace8-3ef76465e570" [label=Constant]
+	"a7dd216d-5f72-4f01-9b5a-f4312306c8f3" -> "8c0b22fb-7140-4bc9-ace8-3ef76465e570"
+	"f9677994-bc0b-4815-b33e-07c161243209" [label="value: 'Too many numbers!'"]
+	"8c0b22fb-7140-4bc9-ace8-3ef76465e570" -> "f9677994-bc0b-4815-b33e-07c161243209"
+	"356237e7-8517-41fb-b29a-669219616513" [label="kind: None"]
+	"8c0b22fb-7140-4bc9-ace8-3ef76465e570" -> "356237e7-8517-41fb-b29a-669219616513"
+	"ac6e1030-07f5-48b4-b5d2-889d61a6f0d0" [label=If]
+	"a811bdab-9d4c-47b7-a895-df95d3b704c1" -> "ac6e1030-07f5-48b4-b5d2-889d61a6f0d0"
+	"f5d7891b-b280-42e9-bb9a-efe5fe19b3b0" [label=Compare]
+	"ac6e1030-07f5-48b4-b5d2-889d61a6f0d0" -> "f5d7891b-b280-42e9-bb9a-efe5fe19b3b0"
+	"35caf725-f7a9-4dfd-8125-6d3689e0d0c9" [label=Call]
+	"f5d7891b-b280-42e9-bb9a-efe5fe19b3b0" -> "35caf725-f7a9-4dfd-8125-6d3689e0d0c9"
+	"cad26425-5679-4a3b-bdd2-363f5e43a14a" [label=Name]
+	"35caf725-f7a9-4dfd-8125-6d3689e0d0c9" -> "cad26425-5679-4a3b-bdd2-363f5e43a14a"
+	"97cafcba-3c29-4e96-bea6-6619fcdf4264" [label="id: 'len'"]
+	"cad26425-5679-4a3b-bdd2-363f5e43a14a" -> "97cafcba-3c29-4e96-bea6-6619fcdf4264"
+	"c58dc062-1e6a-4f47-8409-13355f5738e7" [label=Load]
+	"cad26425-5679-4a3b-bdd2-363f5e43a14a" -> "c58dc062-1e6a-4f47-8409-13355f5738e7"
+	"54766891-ec19-4e71-8352-c7011a7d8766" [label=Name]
+	"35caf725-f7a9-4dfd-8125-6d3689e0d0c9" -> "54766891-ec19-4e71-8352-c7011a7d8766"
+	"f9afc0f9-01e8-4c17-907a-3aa7d182be22" [label="id: 'result'"]
+	"54766891-ec19-4e71-8352-c7011a7d8766" -> "f9afc0f9-01e8-4c17-907a-3aa7d182be22"
+	"cbd9faef-4583-4d3f-b344-e026869ae88e" [label=Load]
+	"54766891-ec19-4e71-8352-c7011a7d8766" -> "cbd9faef-4583-4d3f-b344-e026869ae88e"
+	"39d91d90-d54d-4e65-be15-9e0ddeceeda1" [label=Lt]
+	"f5d7891b-b280-42e9-bb9a-efe5fe19b3b0" -> "39d91d90-d54d-4e65-be15-9e0ddeceeda1"
+	"e409b6d8-7c2f-49a1-b3ad-0da2d3ac4ca9" [label=Constant]
+	"f5d7891b-b280-42e9-bb9a-efe5fe19b3b0" -> "e409b6d8-7c2f-49a1-b3ad-0da2d3ac4ca9"
+	"16a1add8-92c7-4618-8c15-0df6eaa9887b" [label="value: 11"]
+	"e409b6d8-7c2f-49a1-b3ad-0da2d3ac4ca9" -> "16a1add8-92c7-4618-8c15-0df6eaa9887b"
+	"1750c6c4-3477-4bfa-bca4-18c963714dff" [label="kind: None"]
+	"e409b6d8-7c2f-49a1-b3ad-0da2d3ac4ca9" -> "1750c6c4-3477-4bfa-bca4-18c963714dff"
+	"15d61a97-2cd3-462f-b2fa-98b9484b091d" [label=Return]
+	"ac6e1030-07f5-48b4-b5d2-889d61a6f0d0" -> "15d61a97-2cd3-462f-b2fa-98b9484b091d"
+	"39a66dbb-0e75-4f46-8219-233c47ff89b5" [label=Constant]
+	"15d61a97-2cd3-462f-b2fa-98b9484b091d" -> "39a66dbb-0e75-4f46-8219-233c47ff89b5"
+	"a28b240a-5509-4216-97ce-2e79daa64ff7" [label="value: 'Not enough numbers!'"]
+	"39a66dbb-0e75-4f46-8219-233c47ff89b5" -> "a28b240a-5509-4216-97ce-2e79daa64ff7"
+	"13c398af-ca89-4b29-af58-87a39d21ac1e" [label="kind: None"]
+	"39a66dbb-0e75-4f46-8219-233c47ff89b5" -> "13c398af-ca89-4b29-af58-87a39d21ac1e"
+	"f859a94e-b220-499a-b8ee-60e31a6ba64d" [label=Return]
+	"04356141-3982-4434-b99b-f7c27515eacb" -> "f859a94e-b220-499a-b8ee-60e31a6ba64d"
+	"1a72fdba-fedc-4edb-b5d3-0cbcd3896866" [label=Name]
+	"f859a94e-b220-499a-b8ee-60e31a6ba64d" -> "1a72fdba-fedc-4edb-b5d3-0cbcd3896866"
+	"8671b927-7431-47a6-9058-df32ef69b118" [label="id: 'result'"]
+	"1a72fdba-fedc-4edb-b5d3-0cbcd3896866" -> "8671b927-7431-47a6-9058-df32ef69b118"
+	"8da712d3-3651-4232-a5ca-60d3bb229002" [label=Load]
+	"1a72fdba-fedc-4edb-b5d3-0cbcd3896866" -> "8da712d3-3651-4232-a5ca-60d3bb229002"
+	"ebdcd30c-dbfd-4516-b042-60e35bb537b0" [label=Name]
+	"04356141-3982-4434-b99b-f7c27515eacb" -> "ebdcd30c-dbfd-4516-b042-60e35bb537b0"
+	"2232a019-d098-4429-a954-58518bdd0ed3" [label="id: 'str'"]
+	"ebdcd30c-dbfd-4516-b042-60e35bb537b0" -> "2232a019-d098-4429-a954-58518bdd0ed3"
+	"9e225551-c03c-4e56-9c7e-033df25ef0e0" [label=Load]
+	"ebdcd30c-dbfd-4516-b042-60e35bb537b0" -> "9e225551-c03c-4e56-9c7e-033df25ef0e0"
+	"af5b17c9-e510-46dd-9a50-5b0b66c60c3e" [label="type_comment: None"]
+	"04356141-3982-4434-b99b-f7c27515eacb" -> "af5b17c9-e510-46dd-9a50-5b0b66c60c3e"
 }

@@ -1,5 +1,6 @@
 import ast
 import uuid
+import textwrap
 from graphviz import Digraph
 
 class ASTParser:
@@ -87,17 +88,19 @@ class ASTParser:
 
 if __name__ == "__main__":
     # Sample code from my own Python course repository
-    sample_code = """
-name = input("What is your name? ")
-
-number_1 = input("Hello, " + str(name) + "! Enter a random number: ")
-
-number_2 = input("Great! Now enter a second random number: ")
-
-answer = int(number_1) + int(number_2)
-
-print(str(number_1) + " + " + str(number_2) + " is " + str(answer))
-"""
+    sample_code = textwrap.dedent("""
+        def find_id_code(text: str) -> str:
+            result = ""
+            for i in range(len(text)):
+                char = text[i]
+                if char.isdigit():
+                    result += char
+            if len(result) > 11:
+                return "Too many numbers!"
+            elif len(result) < 11:
+                return "Not enough numbers!"
+            return result
+    """)
     parser = ASTParser()
     tree_dict = parser.parse_code(sample_code)
     ast_graph = parser.convert_dict_to_graph(tree_dict)
