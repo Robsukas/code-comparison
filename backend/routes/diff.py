@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from lib.strict_comparison import StrictComparator
 import code_diff as cd
+import textwrap
 
 diff_bp = Blueprint('diff', __name__)
 
@@ -10,6 +11,9 @@ def diff_endpoint():
 
     code_block_1 = data.get('code_block_1')
     code_block_2 = data.get('code_block_2')
+
+    code_block_1 = textwrap.dedent(code_block_1).strip()
+    code_block_2 = textwrap.dedent(code_block_2).strip()
 
     if not code_block_1 or not code_block_2:
         return jsonify({'error': 'Both code_block_1 and code_block_2 are required.'}), 400

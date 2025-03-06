@@ -1,8 +1,10 @@
 from flask import Flask
 from config import DevelopmentConfig
+from flask_cors import CORS
 
 def create_app(config_class=DevelopmentConfig):
     app = Flask(__name__)
+    CORS(app)
     app.config.from_object(config_class)
 
     from routes.diff import diff_bp
@@ -13,4 +15,4 @@ def create_app(config_class=DevelopmentConfig):
 app = create_app()
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=5000)
