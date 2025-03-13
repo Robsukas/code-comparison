@@ -10,8 +10,8 @@ interface CompareCodeResponse {
 }
 
 const CompareCode: React.FC = () => {
-  const [codeBlock1, setCodeBlock1] = useState('');
-  const [codeBlock2, setCodeBlock2] = useState('');
+  const [studentCodeBlock, setstudentCodeBlock] = useState('');
+  const [checkCodeBlock, setcheckCodeBlock] = useState('');
   const [responseData, setResponseData] = useState<CompareCodeResponse | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -24,8 +24,8 @@ const CompareCode: React.FC = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          code_block_1: codeBlock1,
-          code_block_2: codeBlock2,
+          student_code_block: studentCodeBlock,
+          check_code_block: checkCodeBlock,
         }),
       });
 
@@ -55,24 +55,24 @@ const CompareCode: React.FC = () => {
       <h2>Compare Two Code Blocks</h2>
 
       <div style={{ marginBottom: '1rem' }}>
-        <label htmlFor="codeBlock1">Code Block 1</label>
+        <label htmlFor="studentCodeBlock">Student Code Block</label>
         <Input
           as="textarea"
-          id="codeBlock1"
+          id="studentCodeBlock"
           rows={8}
-          value={codeBlock1}
-          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCodeBlock1(e.target.value)}
+          value={studentCodeBlock}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setstudentCodeBlock(e.target.value)}
         />
       </div>
 
       <div style={{ marginBottom: '1rem' }}>
-        <label htmlFor="codeBlock2">Code Block 2</label>
+        <label htmlFor="checkCodeBlock">Check Code Block</label>
         <Input
           as="textarea"
-          id="codeBlock2"
+          id="checkCodeBlock"
           rows={8}
-          value={codeBlock2}
-          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCodeBlock2(e.target.value)}
+          value={checkCodeBlock}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setcheckCodeBlock(e.target.value)}
         />
       </div>
 
