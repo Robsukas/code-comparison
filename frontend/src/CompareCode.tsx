@@ -1,24 +1,44 @@
 import React, { useState } from 'react';
-import { TTNewButton, Input } from 'taltech-styleguide';
+import { TTNewButton, Input, Accordion, AccordionItem } from 'taltech-styleguide';
+import FlowchartComparison from './FlowchartComparison';
+
+interface FunctionDiffs {
+  strict_comparison: string[];
+  code_diff: string[];
+  teacherDSL: string;
+  studentDSL: string;
+  diffMetadata: {
+    extraInStudent: string[];
+    extraInTeacher: string[];
+  };
+}
+
+interface ModuleSpecificDiffs {
+  function_mismatch: string[];
+}
+
+interface Differences {
+  module_specific_diffs: ModuleSpecificDiffs;
+  function_specific_diffs: { [key: string]: FunctionDiffs };
+}
 
 interface CompareCodeResponse {
   message?: string;
-  strict_ast_result?: any;
-  code_diff_result?: string[];
+  differences?: Differences;
   error?: string;
   details?: string;
 }
 
 const CompareCode: React.FC = () => {
-  const [studentCodeBlock, setstudentCodeBlock] = useState('');
-  const [checkCodeBlock, setcheckCodeBlock] = useState('');
+  const [studentCodeBlock, setStudentCodeBlock] = useState('');
+  const [checkCodeBlock, setCheckCodeBlock] = useState('');
   const [responseData, setResponseData] = useState<CompareCodeResponse | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
+  const [structuralOpenMap, setStructuralOpenMap] = useState<{ [funcName: string]: boolean }>({});
 
   const handleSubmit = async () => {
     setErrorMsg('');
     setResponseData(null);
-
     try {
       const response = await fetch('http://localhost:5000/api/diff', {
         method: 'POST',
@@ -28,10 +48,6 @@ const CompareCode: React.FC = () => {
           check_code_block: checkCodeBlock,
         }),
       });
-
-      console.log('Response status:', response.status);
-      console.log('Response headers:', Array.from(response.headers.entries()));
-
       const rawText = await response.text();
       console.log('Raw response text:\n', rawText);
 
@@ -51,29 +67,35 @@ const CompareCode: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+    <div className="compare-code-container">
       <h2>Compare Two Code Blocks</h2>
 
-      <div style={{ marginBottom: '1rem' }}>
-        <label htmlFor="studentCodeBlock">Student Code Block</label>
-        <Input
-          as="textarea"
-          id="studentCodeBlock"
-          rows={8}
-          value={studentCodeBlock}
-          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setstudentCodeBlock(e.target.value)}
-        />
-      </div>
+      <div className="inputs-container">
+        <div className="code-input-block">
+          <label htmlFor="studentCodeBlock">Student Code Block</label>
+          <Input
+            as="textarea"
+            id="studentCodeBlock"
+            rows={12}
+            value={studentCodeBlock}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+              setStudentCodeBlock(e.target.value)
+            }
+          />
+        </div>
 
-      <div style={{ marginBottom: '1rem' }}>
-        <label htmlFor="checkCodeBlock">Check Code Block</label>
-        <Input
-          as="textarea"
-          id="checkCodeBlock"
-          rows={8}
-          value={checkCodeBlock}
-          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setcheckCodeBlock(e.target.value)}
-        />
+        <div className="code-input-block">
+          <label htmlFor="checkCodeBlock">Teacher Code Block</label>
+          <Input
+            as="textarea"
+            id="checkCodeBlock"
+            rows={12}
+            value={checkCodeBlock}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+              setCheckCodeBlock(e.target.value)
+            }
+          />
+        </div>
       </div>
 
       <TTNewButton onClick={handleSubmit}>Compare</TTNewButton>
@@ -84,10 +106,54 @@ const CompareCode: React.FC = () => {
         </div>
       )}
 
-      {responseData && (
-        <pre style={{ marginTop: '1rem', background: '#f4f4f4', padding: '1rem' }}>
-          {JSON.stringify(responseData, null, 2)}
-        </pre>
+      {responseData && responseData.differences && (
+        <div style={{ marginTop: '1rem' }}>
+          <h3>Module Specific Differences</h3>
+          <pre>{JSON.stringify(responseData.differences.module_specific_diffs, null, 2)}</pre>
+
+          <h3>Function Specific Differences</h3>
+          <Accordion>
+            {Object.entries(responseData.differences.function_specific_diffs).map(
+              ([funcName, diffs]) => {
+                const isOpen = structuralOpenMap[funcName] || false;
+                return (
+                  <AccordionItem key={funcName} itemKey={funcName} label={funcName}>
+                    <div style={{ padding: '1rem' }}>
+                      <Accordion
+                        onChange={(key: string, state: 'close' | 'open') => {
+                          if (key === 'structural') {
+                            setStructuralOpenMap((prev) => ({
+                              ...prev,
+                              [funcName]: state === 'open',
+                            }));
+                          }
+                        }}
+                        defaultItemKey=""
+                      >
+                        <AccordionItem itemKey="strict" label="Strict Comparison">
+                          <pre>{diffs.strict_comparison.join('\n')}</pre>
+                        </AccordionItem>
+
+                        <AccordionItem itemKey="code" label="Code Diff">
+                          <pre>{diffs.code_diff.join('\n')}</pre>
+                        </AccordionItem>
+
+                        <AccordionItem itemKey="structural" label="Structural Comparison">
+                          {isOpen && (
+                            <FlowchartComparison
+                              teacherDSL={diffs.teacherDSL}
+                              studentDSL={diffs.studentDSL}
+                            />
+                          )}
+                        </AccordionItem>
+                      </Accordion>
+                    </div>
+                  </AccordionItem>
+                );
+              }
+            )}
+          </Accordion>
+        </div>
       )}
     </div>
   );

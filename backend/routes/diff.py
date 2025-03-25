@@ -21,28 +21,14 @@ def diff_endpoint():
     
     student_funcs_dict = Utils.extract_functions(student_code_block)
     check_funcs_dict = Utils.extract_functions(check_code_block)
-
-    differences = {}
-
-    matched_student_funcs_dict, matched_check_funcs_dict, diffs = Utils.check_function_mismatch(
-        student_funcs_dict,
-        check_funcs_dict
-    )
-
-    differences['function_name_mismatches'] = diffs
     
-    #try:
-    #    ast_comparison_result = StrictComparator.compare(code_block_1, code_block_2)
-    #    code_diff_result = cd.difference(code_block_1, code_block_2, lang="python")
-    #    code_diff_result_edited = code_diff_result.edit_script()
-    #    code_diff_result_serializable = [str(diff) for diff in code_diff_result_edited]
-    #except Exception as e:
-    #    return jsonify({'error': 'Error processing code differences', 'details': str(e)}), 500
+    try:
+        differences = Utils.compare(student_funcs_dict, check_funcs_dict)
+    except Exception as e:
+        return jsonify({'error': 'Error processing code differences', 'details': str(e)}), 500
 
     response = {
         'message': 'Code blocks processed successfully',
-        'student_functions': matched_student_funcs_dict,
-        'check_functions': matched_check_funcs_dict,
         'differences': differences
     }
     
