@@ -3,11 +3,20 @@ import {
   TTNewButton, 
   Input, 
   Accordion,
-  AccordionItem
+  AccordionItem,
+  TTNewCard,
+  TTNewCardContent,
+  Heading,
+  Typography,
+  FilterBar,
+  Loader
 } from 'taltech-styleguide';
 import DropdownSelect from './components/DropdownSelect';
 import FlowchartComparison from './FlowchartComparison';
 import { CompareCodeResponse, YEARS, EXERCISES } from './types/compareCode';
+import AnalysisConclusion from './components/AnalysisConclusion';
+import DiffView from './components/DiffView';
+import './styles/ComparisonView.css';
 
 const CompareCode: React.FC = () => {
   // State
@@ -19,6 +28,17 @@ const CompareCode: React.FC = () => {
   const [structuralOpenMap, setStructuralOpenMap] = useState<{ [funcName: string]: boolean }>({});
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isYearDropdownOpen, setIsYearDropdownOpen] = useState(false);
+  const [useLLM, setUseLLM] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Filter options
+  const filterOptions = [
+    {
+      color: '#51BFD3',
+      label: 'AI Analysis',
+      value: 'llm'
+    }
+  ];
 
   // Handlers
   const handleSubmit = async () => {
@@ -29,6 +49,7 @@ const CompareCode: React.FC = () => {
 
     setErrorMsg('');
     setResponseData(null);
+    setIsLoading(true);
     
     try {
       const response = await fetch('http://localhost:5000/api/diff', {
@@ -37,7 +58,8 @@ const CompareCode: React.FC = () => {
         body: JSON.stringify({
           student_id: studentId,
           exercise: selectedExercise,
-          year: selectedYear
+          year: selectedYear,
+          use_llm: useLLM
         }),
       });
       
@@ -55,6 +77,8 @@ const CompareCode: React.FC = () => {
       }
     } catch (err: any) {
       setErrorMsg(`Error occurred: ${err.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -65,13 +89,19 @@ const CompareCode: React.FC = () => {
     }));
   };
 
+  const handleFilterChange = (values: any[]) => {
+    setUseLLM(values.some(value => value.value === 'llm'));
+  };
+
   return (
     <div className="compare-code-container">
-      <h2>Compare Student Code</h2>
+      <Heading as="h2" visual="h2" color="primary">Compare Student Code</Heading>
 
       <div className="inputs-container">
         <div className="input-block">
-          <label htmlFor="studentId">Student ID</label>
+          <label htmlFor="studentId">
+            <Typography as="span" visual="label">Student ID</Typography>
+          </label>
           <Input
             id="studentId"
             value={studentId}
@@ -103,62 +133,122 @@ const CompareCode: React.FC = () => {
         />
       </div>
 
+      <div style={{ margin: '1rem 0' }}>
+        <FilterBar
+          options={filterOptions}
+          values={useLLM ? filterOptions : []}
+          onChange={handleFilterChange}
+          size="sm"
+          allToggle="All filters"
+        />
+      </div>
+
       <TTNewButton onClick={handleSubmit}>Compare</TTNewButton>
 
       {errorMsg && (
-        <div style={{ marginTop: '1rem', color: 'red' }}>
-          <strong>Error:</strong> {errorMsg}
+        <div style={{ marginTop: '1rem' }}>
+          <Typography as="p" color="danger">
+            <Typography as="strong">Error:</Typography> {errorMsg}
+          </Typography>
         </div>
       )}
 
-      {responseData?.differences && (
-        <div style={{ marginTop: '1rem' }}>
-          <h3>Module Specific Differences</h3>
-          <pre>{JSON.stringify(responseData.differences.module_specific_diffs, null, 2)}</pre>
+      {isLoading && (
+        <div style={{ margin: '2rem 0' }}>
+          <Loader size="lg" center overlay />
+        </div>
+      )}
 
-          <h3>Function Specific Differences</h3>
-          <Accordion>
-            {Object.entries(responseData.differences.function_specific_diffs).map(
-              ([funcName, diffs]) => (
-                <AccordionItem key={funcName} itemKey={funcName} label={funcName}>
-                  <div style={{ padding: '1rem' }}>
-                    <Accordion
-                      onChange={(key, state) => {
-                        if (key === 'structural') {
-                          handleStructuralChange(funcName, state === 'open');
-                        }
-                      }}
-                      defaultItemKey=""
-                    >
-                      <AccordionItem itemKey="strict" label="Strict Comparison">
-                        <pre>{diffs.strict_comparison.join('\n')}</pre>
-                      </AccordionItem>
+      {responseData && !isLoading && (
+        <div style={{ marginTop: '2rem' }}>
+          {responseData.conclusion && (
+            <div style={{ marginBottom: '2rem' }}>
+              <TTNewCard>
+                <TTNewCardContent>
+                  <AnalysisConclusion conclusion={responseData.conclusion} />
+                </TTNewCardContent>
+              </TTNewCard>
+            </div>
+          )}
 
-                      <AccordionItem itemKey="semantic" label="Semantic Comparison">
-                        <ul>
-                          {diffs.semantic_comparison.map((op: string, idx: number) => (
-                            <li key={idx}>{op}</li>
-                          ))}
-                        </ul>
-                      </AccordionItem>
+          {responseData.differences && (
+            <>
+              <div style={{ marginBottom: '1rem' }}>
+                <Heading as="h3" visual="h3" color="primary">
+                  Module Specific Differences
+                </Heading>
+              </div>
+              <div style={{ marginBottom: '2rem' }}>
+                <TTNewCard>
+                  <TTNewCardContent>
+                    <pre style={{ margin: 0 }}>
+                      {JSON.stringify(responseData.differences.module_specific_diffs, null, 2)}
+                    </pre>
+                  </TTNewCardContent>
+                </TTNewCard>
+              </div>
 
-                      <AccordionItem 
-                        itemKey="structural" 
-                        label="Structural Comparison"
-                      >
-                        {structuralOpenMap[funcName] && (
-                          <FlowchartComparison
-                            teacherDSL={diffs.teacherDSL}
-                            studentDSL={diffs.studentDSL}
-                          />
-                        )}
-                      </AccordionItem>
-                    </Accordion>
-                  </div>
-                </AccordionItem>
-              )
-            )}
-          </Accordion>
+              <div style={{ marginBottom: '1rem' }}>
+                <Heading as="h3" visual="h3" color="primary">
+                  Function Specific Differences
+                </Heading>
+              </div>
+              <Accordion>
+                {Object.entries(responseData.differences.function_specific_diffs).map(
+                  ([funcName, diffs]) => (
+                    <AccordionItem key={funcName} itemKey={funcName} label={funcName}>
+                      <div style={{ padding: '1rem' }}>
+                        <Accordion
+                          onChange={(key, state) => {
+                            if (key === 'structural') {
+                              handleStructuralChange(funcName, state === 'open');
+                            }
+                          }}
+                          defaultItemKey=""
+                        >
+                          <AccordionItem itemKey="strict" label="Strict Comparison">
+                            <TTNewCard>
+                              <TTNewCardContent>
+                                <ul className="comparison-list">
+                                  {diffs.strict_comparison.map((line: string, idx: number) => (
+                                    <li key={idx} className="comparison-list-item">{line}</li>
+                                  ))}
+                                </ul>
+                              </TTNewCardContent>
+                            </TTNewCard>
+                          </AccordionItem>
+
+                          <AccordionItem 
+                            itemKey="structural" 
+                            label="Structural Comparison"
+                          >
+                            {structuralOpenMap[funcName] && (
+                                  <FlowchartComparison
+                                    teacherDSL={diffs.teacherDSL}
+                                    studentDSL={diffs.studentDSL}
+                                  />
+                            )}
+                          </AccordionItem>
+
+                          <AccordionItem 
+                            itemKey="diff" 
+                            label="Diff View"
+                          >
+                            {diffs.unified_diff && (
+                              <DiffView 
+                                diff={diffs.unified_diff}
+                                    id={`diff-${funcName}`}
+                                  />
+                            )}
+                          </AccordionItem>
+                        </Accordion>
+                      </div>
+                    </AccordionItem>
+                  )
+                )}
+              </Accordion>
+            </>
+          )}
         </div>
       )}
     </div>

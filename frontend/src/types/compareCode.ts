@@ -1,9 +1,9 @@
 // Types
 export interface FunctionDiffs {
   strict_comparison: string[];
-  semantic_comparison: string[];
   teacherDSL: string;
   studentDSL: string;
+  unified_diff: string;
   diffMetadata: {
     extraInStudent: string[];
     extraInTeacher: string[];
@@ -22,6 +22,7 @@ export interface Differences {
 export interface CompareCodeResponse {
   message?: string;
   differences?: Differences;
+  conclusion?: string;
   error?: string;
   details?: string;
 }

@@ -1,0 +1,29 @@
+.comparison-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.comparison-item {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .comparison-container {
+    flex-direction: row;
+  }
+}
+
+.comparison-list {
+  margin: 0;
+  padding-left: 1.5rem;
+  overflow-x: auto;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.comparison-list-item {
+  word-break: break-word;
+  overflow-wrap: break-word;
+} 

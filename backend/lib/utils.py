@@ -1,5 +1,4 @@
 import ast
-import code_diff as cd
 from pyflowchart import Flowchart
 from .strict_comparison import StrictComparator
 from .structural_comparison import StructuralComparator
@@ -41,30 +40,45 @@ class Utils:
         return matched_in_student, matched_in_check, differences_list
 
     @staticmethod
+    def generate_unified_diff(student_code: str, teacher_code: str, func_name: str) -> str:
+        """Generate a unified diff string for the given student and teacher code."""
+        from difflib import unified_diff
+        student_lines = student_code.splitlines(keepends=True)
+        teacher_lines = teacher_code.splitlines(keepends=True)
+        
+        # Generate unified diff
+        diff_lines = list(unified_diff(
+            student_lines,
+            teacher_lines,
+            fromfile=f'a/{func_name}.py',
+            tofile=f'b/{func_name}.py',
+            lineterm=''
+        ))
+        
+        return '\n'.join(diff_lines)
+
+    @staticmethod
     def compare(student_funcs: dict, teacher_funcs: dict) -> dict:
         result = {}
         for func_name, student_code in student_funcs.items():
             if func_name in teacher_funcs:
                 teacher_code = teacher_funcs[func_name]
-                
+
                 strict_comparison = StrictComparator.compare(student_code, teacher_code)
-                diff = cd.difference(student_code, teacher_code, lang="python")
-                code_diff_result = [str(instr) for instr in diff.edit_script()]
-                
+
                 structural_info = StructuralComparator.compare(student_code, teacher_code)
                 
+                unified_diff = Utils.generate_unified_diff(student_code, teacher_code, func_name)
+
                 result[func_name] = {
                     "strict_comparison": strict_comparison,
-                    "code_diff": code_diff_result,
                     "teacherDSL": structural_info["teacherDSL"],
-                    "studentDSL": structural_info["studentDSL"]
+                    "studentDSL": structural_info["studentDSL"],
+                    "unified_diff": unified_diff
                 }
-        # might use matched_in_student and matched_in_check later
         _, _, mismatches = Utils.check_function_mismatch(student_funcs, teacher_funcs)
         final_result = {
-            "module_specific_diffs": {
-                "function_mismatch": mismatches
-            },
+            "module_specific_diffs": {"function_mismatch": mismatches},
             "function_specific_diffs": result
         }
         return final_result
