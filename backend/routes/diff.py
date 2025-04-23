@@ -41,11 +41,28 @@ def diff_endpoint():
     student_code = textwrap.dedent(student_code).strip()
     teacher_code = textwrap.dedent(teacher_code).strip()
     
-    student_funcs_dict = Utils.extract_functions(student_code)
-    teacher_funcs_dict = Utils.extract_functions(teacher_code)
+    # Detect code type for both student and teacher code
+    student_code_type = Utils.detect_code_type(student_code)
+    teacher_code_type = Utils.detect_code_type(teacher_code)
+    
+    # If code types don't match, return an error
+    if student_code_type != teacher_code_type:
+        return jsonify({
+            'error': 'Code type mismatch',
+            'details': f'Student code is {student_code_type} while teacher code is {teacher_code_type}'
+        }), 400
+    
+    # Extract functions or handle block-based code
+    if student_code_type == "function_based":
+        student_dict = {"functions": Utils.extract_functions(student_code)}
+        teacher_dict = {"functions": Utils.extract_functions(teacher_code)}
+    else:
+        # For block-based code, treat the entire code as a single block
+        student_dict = {"main_block": Utils.extract_main_block(student_code)}
+        teacher_dict = {"main_block": Utils.extract_main_block(teacher_code)}
     
     try:
-        differences = Utils.compare(student_funcs_dict, teacher_funcs_dict)
+        differences = Utils.compare(student_dict, teacher_dict)
         
         conclusion = None
         if use_llm:

@@ -173,20 +173,30 @@ const CompareCode: React.FC = () => {
 
           {responseData.differences && (
             <>
-              <div style={{ marginBottom: '1rem' }}>
-                <Heading as="h3" visual="h3" color="primary">
-                  Module Specific Differences
-                </Heading>
-              </div>
-              <div style={{ marginBottom: '2rem' }}>
-                <TTNewCard>
-                  <TTNewCardContent>
-                    <pre style={{ margin: 0 }}>
-                      {JSON.stringify(responseData.differences.module_specific_diffs, null, 2)}
-                    </pre>
-                  </TTNewCardContent>
-                </TTNewCard>
-              </div>
+              {responseData.differences.module_specific_diffs.function_mismatch.length > 0 && (
+                <>
+                  <div>
+                    <Heading as="h3" visual="h3" color="primary">
+                      Module Specific Differences
+                    </Heading>
+                  </div>
+                  <div style={{ marginBottom: '2rem' }}>
+                    <TTNewCard>
+                      <TTNewCardContent>
+                        <ul className="comparison-list">
+                          {responseData.differences.module_specific_diffs.function_mismatch.map((mismatch, idx) => (
+                            <li key={idx} className="comparison-list-item">
+                              <Typography as="span" color="danger" visual="h5">
+                                {mismatch}
+                              </Typography>
+                            </li>
+                          ))}
+                        </ul>
+                      </TTNewCardContent>
+                    </TTNewCard>
+                  </div>
+                </>
+              )}
 
               <div style={{ marginBottom: '1rem' }}>
                 <Heading as="h3" visual="h3" color="primary">
@@ -223,10 +233,10 @@ const CompareCode: React.FC = () => {
                             label="Structural Comparison"
                           >
                             {structuralOpenMap[funcName] && (
-                                  <FlowchartComparison
-                                    teacherDSL={diffs.teacherDSL}
-                                    studentDSL={diffs.studentDSL}
-                                  />
+                              <FlowchartComparison
+                                teacherDSL={diffs.teacherDSL}
+                                studentDSL={diffs.studentDSL}
+                              />
                             )}
                           </AccordionItem>
 
@@ -237,8 +247,8 @@ const CompareCode: React.FC = () => {
                             {diffs.unified_diff && (
                               <DiffView 
                                 diff={diffs.unified_diff}
-                                    id={`diff-${funcName}`}
-                                  />
+                                id={`diff-${funcName}`}
+                              />
                             )}
                           </AccordionItem>
                         </Accordion>

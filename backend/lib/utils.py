@@ -6,6 +6,22 @@ from .structural_comparison import StructuralComparator
 class Utils:
 
     @staticmethod
+    def detect_code_type(source_code: str) -> str:
+        """Detect if the code contains functions or is a block of code.
+        
+        Returns:
+            str: 'function_based' if code contains functions, 'block_based' otherwise
+        """
+        try:
+            tree = ast.parse(source_code)
+            for node in ast.walk(tree):
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    return "function_based"
+            return "block_based"
+        except SyntaxError:
+            return "block_based"  # If code can't be parsed, treat it as a block
+
+    @staticmethod
     def extract_functions(source_code: str) -> dict:
         tree = ast.parse(source_code)
         functions_dict = {}
@@ -18,6 +34,41 @@ class Utils:
                 fn_source = ast.unparse(node)
                 functions_dict[node.name] = fn_source
         return functions_dict
+
+    @staticmethod
+    def _is_doc_expr(node: ast.AST) -> bool:
+        """True if *node* is an `Expr` whose value is a plain string literal."""
+        return (
+            isinstance(node, ast.Expr)
+            and isinstance(node.value, ast.Constant)   # ast.Str on < 3.8
+            and isinstance(node.value.value, str)
+        )
+
+    @staticmethod
+    def extract_main_block(source_code: str) -> str:
+        """
+        Return the main (non-function) part of *source_code* with **all**
+        docstrings removed.  Comments disappear automatically when we unparse.
+        """
+        try:
+            tree = ast.parse(source_code)
+
+            # ── 1. strip every leading module-level docstring ────────────────
+            while tree.body and Utils._is_doc_expr(tree.body[0]):
+                tree.body.pop(0)                       # remove it
+
+            # ── 2. strip first statement of each def / async def / class ────
+            for node in ast.walk(tree):
+                if isinstance(node, (ast.FunctionDef,
+                                      ast.AsyncFunctionDef,
+                                      ast.ClassDef)):
+                    if node.body and Utils._is_doc_expr(node.body[0]):
+                        node.body.pop(0)
+
+            return ast.unparse(tree)                   # back to source code
+
+        except SyntaxError:
+            return source_code                         # fall back unchanged
 
     @staticmethod
     def check_function_mismatch(student_dict: dict, check_dict: dict):
@@ -58,27 +109,55 @@ class Utils:
         return '\n'.join(diff_lines)
 
     @staticmethod
-    def compare(student_funcs: dict, teacher_funcs: dict) -> dict:
+    def compare(student_dict: dict, teacher_dict: dict) -> dict:
         result = {}
-        for func_name, student_code in student_funcs.items():
-            if func_name in teacher_funcs:
-                teacher_code = teacher_funcs[func_name]
-
-                strict_comparison = StrictComparator.compare(student_code, teacher_code)
-
-                structural_info = StructuralComparator.compare(student_code, teacher_code)
-                
-                unified_diff = Utils.generate_unified_diff(student_code, teacher_code, func_name)
-
-                result[func_name] = {
-                    "strict_comparison": strict_comparison,
-                    "teacherDSL": structural_info["teacherDSL"],
-                    "studentDSL": structural_info["studentDSL"],
-                    "unified_diff": unified_diff
-                }
-        _, _, mismatches = Utils.check_function_mismatch(student_funcs, teacher_funcs)
-        final_result = {
+        
+        # Check if we're comparing block-based code
+        is_block_based = "main_block" in student_dict or "main_block" in teacher_dict
+        
+        if is_block_based:
+            # For block-based code, compare the entire blocks
+            student_code = student_dict.get("main_block", "")
+            teacher_code = teacher_dict.get("main_block", "")
+            
+            strict_comparison = StrictComparator.compare(student_code, teacher_code)
+            structural_info = StructuralComparator.compare(student_code, teacher_code)
+            unified_diff = Utils.generate_unified_diff(student_code, teacher_code, "main_block")
+            
+            result["main_block"] = {
+                "strict_comparison": strict_comparison,
+                "teacherDSL": structural_info["teacherDSL"],
+                "studentDSL": structural_info["studentDSL"],
+                "unified_diff": unified_diff
+            }
+            
+            # No function mismatches for block-based code
+            mismatches = []
+        else:
+            # For function-based code, compare each function
+            student_funcs = student_dict.get("functions", {})
+            teacher_funcs = teacher_dict.get("functions", {})
+            
+            for func_name, student_code in student_funcs.items():
+                if func_name in teacher_funcs:
+                    teacher_code = teacher_funcs[func_name]
+                    
+                    strict_comparison = StrictComparator.compare(student_code, teacher_code)
+                    structural_info = StructuralComparator.compare(student_code, teacher_code)
+                    unified_diff = Utils.generate_unified_diff(student_code, teacher_code, func_name)
+                    
+                    result[func_name] = {
+                        "strict_comparison": strict_comparison,
+                        "teacherDSL": structural_info["teacherDSL"],
+                        "studentDSL": structural_info["studentDSL"],
+                        "unified_diff": unified_diff
+                    }
+            
+            # Check for function mismatches using the existing method
+            _, _, mismatches = Utils.check_function_mismatch(student_funcs, teacher_funcs)
+        
+        return {
             "module_specific_diffs": {"function_mismatch": mismatches},
             "function_specific_diffs": result
         }
-        return final_result
+
