@@ -14,9 +14,15 @@ export interface ModuleSpecificDiffs {
   function_mismatch: string[];
 }
 
+export interface FileDiffs {
+  [functionName: string]: FunctionDiffs;
+}
+
 export interface Differences {
   module_specific_diffs: ModuleSpecificDiffs;
-  function_specific_diffs: { [key: string]: FunctionDiffs };
+  function_specific_diffs: {
+    [fileName: string]: FileDiffs;
+  };
 }
 
 export interface CompareCodeResponse {

@@ -168,7 +168,7 @@ class GitLabClient:
             return []
 
     # Code retrieval methods
-    def get_teacher_code(self, exercise: str, year: str) -> Optional[str]:
+    def get_teacher_code(self, exercise: str, year: str) -> Optional[Dict[str, str]]:
         """
         Fetch teacher's code for a specific exercise.
         
@@ -177,7 +177,7 @@ class GitLabClient:
             year: Year of the repository (e.g., '2024')
             
         Returns:
-            The teacher's code as string if successful, None otherwise
+            Dictionary mapping filenames to their content if successful, None otherwise
         """
         # Find the exercise directory
         exercise_dir = self.get_exercise_directory(exercise, year=year)
@@ -189,22 +189,30 @@ class GitLabClient:
         if not solution_files:
             return None
         
-        # Combine all solution files
-        combined_code = []
+        # Store each file's content separately
+        code_dict = {}
         for file_name in solution_files:
             file_path = self._build_file_path(exercise_dir, file_name)
             content = self.get_file_content(self._get_teacher_project_id(year), file_path)
             if content:
-                combined_code.append(content)
+                code_dict[file_name] = content
         
-        if not combined_code:
+        if not code_dict:
             return None
         
-        return "\n\n".join(combined_code)
+        return code_dict
 
-    def get_student_code(self, student_id: str, exercise: str, year: str) -> Optional[str]:
+    def get_student_code(self, student_id: str, exercise: str, year: str) -> Optional[Dict[str, str]]:
         """
         Fetch student's code for a specific exercise.
+        
+        Args:
+            student_id: Student's ID (e.g., 'ronook')
+            exercise: Exercise identifier (e.g., 'EX02')
+            year: Year of the repository (e.g., '2024')
+            
+        Returns:
+            Dictionary mapping filenames to their content if successful, None otherwise
         """
         # Find the exercise directory, trying student repo first
         exercise_dir = self.get_exercise_directory(exercise, student_id, year)
@@ -220,15 +228,15 @@ class GitLabClient:
         student_id = student_id.lower()
         project_id = self._get_student_project_id(student_id, year)
 
-        # Combine all Python files
-        combined_code = []
+        # Store each file's content separately
+        code_dict = {}
         for file_name in python_files:
             file_path = self._build_file_path(exercise_dir, file_name)
             content = self.get_file_content(project_id, file_path)
             if content:
-                combined_code.append(content)
+                code_dict[file_name] = content
         
-        if not combined_code:
+        if not code_dict:
             return None
         
-        return "\n\n".join(combined_code) 
+        return code_dict 

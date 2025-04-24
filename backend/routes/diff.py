@@ -23,51 +23,43 @@ def diff_endpoint():
         return jsonify({'error': 'student_id, exercise, and year are required.'}), 400
 
     # Fetch code from GitLab
-    student_code = gitlab_client.get_student_code(student_id, exercise, year)
-    teacher_code = gitlab_client.get_teacher_code(exercise, year)
+    student_code_dict = gitlab_client.get_student_code(student_id, exercise, year)
+    teacher_code_dict = gitlab_client.get_teacher_code(exercise, year)
 
-    if not student_code:
+    if not student_code_dict:
         return jsonify({
             'error': 'Failed to fetch code from GitLab',
             'details': 'Could not retrieve student code'
         }), 500
     
-    if not teacher_code:
+    if not teacher_code_dict:
         return jsonify({
             'error': 'Failed to fetch code from GitLab',
             'details': 'Could not retrieve teacher code'
         }), 500
 
-    student_code = textwrap.dedent(student_code).strip()
-    teacher_code = textwrap.dedent(teacher_code).strip()
+    # For validation, check the first file's code type
+    student_code = next(iter(student_code_dict.values()))
+    teacher_code = next(iter(teacher_code_dict.values()))
     
-    # Detect code type for both student and teacher code
     student_code_type = Utils.detect_code_type(student_code)
     teacher_code_type = Utils.detect_code_type(teacher_code)
     
-    # If code types don't match, return an error
     if student_code_type != teacher_code_type:
         return jsonify({
             'error': 'Code type mismatch',
             'details': f'Student code is {student_code_type} while teacher code is {teacher_code_type}'
         }), 400
-    
-    # Extract functions or handle block-based code
-    if student_code_type == "function_based":
-        student_dict = {"functions": Utils.extract_functions(student_code)}
-        teacher_dict = {"functions": Utils.extract_functions(teacher_code)}
-    else:
-        # For block-based code, treat the entire code as a single block
-        student_dict = {"main_block": Utils.extract_main_block(student_code)}
-        teacher_dict = {"main_block": Utils.extract_main_block(teacher_code)}
-    
+
     try:
-        differences = Utils.compare(student_dict, teacher_dict)
+        # Compare all files
+        differences = Utils.compare_files(student_code_dict, teacher_code_dict)
+
         
         conclusion = None
         if use_llm:
             try:
-                conclusion = openai_client.generate_conclusion(teacher_code, student_code, differences)
+                conclusion = openai_client.generate_conclusion(teacher_code_dict, student_code_dict)
             except Exception as e:
                 if 'insufficient_quota' in str(e):
                     conclusion = "Analysis conclusion is currently unavailable due to API quota limitations. Please try again later or contact support."

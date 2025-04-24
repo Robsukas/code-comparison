@@ -113,18 +113,18 @@ class Utils:
         result = {}
         
         # Check if we're comparing block-based code
-        is_block_based = "main_block" in student_dict or "main_block" in teacher_dict
+        is_block_based = "main" in student_dict or "main" in teacher_dict
         
         if is_block_based:
             # For block-based code, compare the entire blocks
-            student_code = student_dict.get("main_block", "")
-            teacher_code = teacher_dict.get("main_block", "")
+            student_code = student_dict.get("main", "")
+            teacher_code = teacher_dict.get("main", "")
             
             strict_comparison = StrictComparator.compare(student_code, teacher_code)
             structural_info = StructuralComparator.compare(student_code, teacher_code)
-            unified_diff = Utils.generate_unified_diff(student_code, teacher_code, "main_block")
+            unified_diff = Utils.generate_unified_diff(student_code, teacher_code, "main")
             
-            result["main_block"] = {
+            result["main"] = {
                 "strict_comparison": strict_comparison,
                 "teacherDSL": structural_info["teacherDSL"],
                 "studentDSL": structural_info["studentDSL"],
@@ -160,4 +160,109 @@ class Utils:
             "module_specific_diffs": {"function_mismatch": mismatches},
             "function_specific_diffs": result
         }
+
+    @staticmethod
+    def extract_functions_from_files(files_dict: dict) -> dict:
+        """Extract functions from a dictionary of files.
+        
+        Args:
+            files_dict: Dictionary mapping filenames to their content
+            
+        Returns:
+            Dictionary mapping filenames to their function dictionaries
+        """
+        result = {}
+        for filename, code in files_dict.items():
+            result[filename] = Utils.extract_functions(code)
+        return result
+
+    @staticmethod
+    def extract_main_blocks_from_files(files_dict: dict) -> dict:
+        """Extract main blocks from a dictionary of files.
+        
+        Args:
+            files_dict: Dictionary mapping filenames to their content
+            
+        Returns:
+            Dictionary mapping filenames to their main blocks
+        """
+        result = {}
+        for filename, code in files_dict.items():
+            result[filename] = {"main": Utils.extract_main_block(code)}
+        return result
+
+    @staticmethod
+    def compare_files(student_files: dict, teacher_files: dict) -> dict:
+        """Compare student and teacher files.
+        
+        Args:
+            student_files: Dictionary mapping filenames to their content
+            teacher_files: Dictionary mapping filenames to their content
+            
+        Returns:
+            Dictionary with comparison results, structured with module-specific diffs at top level
+            and function-specific diffs organized by filename
+        """
+        result = {
+            "module_specific_diffs": {
+                "function_mismatch": []
+            },
+            "function_specific_diffs": {}
+        }
+        
+        # Create a mapping of student filenames to teacher filenames
+        filename_mapping = {}
+        for student_filename in student_files.keys():
+            # Try to find matching teacher file by removing _solution suffix
+            base_name = student_filename.replace('_solution.py', '.py')
+            if base_name in teacher_files:
+                filename_mapping[student_filename] = base_name
+            else:
+                # If no exact match, try to find a file with the same base name
+                for teacher_filename in teacher_files.keys():
+                    if teacher_filename.replace('_solution.py', '.py') == base_name:
+                        filename_mapping[student_filename] = teacher_filename
+                        break
+        
+        # Compare files using the mapping
+        for student_filename, teacher_filename in filename_mapping.items():
+            student_code = student_files[student_filename]
+            teacher_code = teacher_files[teacher_filename]
+            
+            # Detect code type
+            is_function_based = Utils.detect_code_type(student_code) == "function_based"
+            
+            if is_function_based:
+                # Extract functions from both files
+                student_funcs = Utils.extract_functions(student_code)
+                teacher_funcs = Utils.extract_functions(teacher_code)
+                
+                # Compare functions
+                comparison = Utils.compare(
+                    {"functions": student_funcs},
+                    {"functions": teacher_funcs}
+                )
+                
+                # Add mismatches to top level
+                result["module_specific_diffs"]["function_mismatch"].extend(
+                    comparison["module_specific_diffs"]["function_mismatch"]
+                )
+                
+                # Add function comparisons under filename
+                result["function_specific_diffs"][student_filename] = comparison["function_specific_diffs"]
+            else:
+                # Extract main blocks from both files
+                student_block = Utils.extract_main_block(student_code)
+                teacher_block = Utils.extract_main_block(teacher_code)
+                
+                # Compare blocks
+                comparison = Utils.compare(
+                    {"main": student_block},
+                    {"main": teacher_block}
+                )
+                
+                # Add function comparisons under filename
+                result["function_specific_diffs"][student_filename] = comparison["function_specific_diffs"]
+        
+        return result
 

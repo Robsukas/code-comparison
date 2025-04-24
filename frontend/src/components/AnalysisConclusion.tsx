@@ -30,11 +30,12 @@ const AnalysisConclusion: React.FC<AnalysisConclusionProps> = ({ conclusion }) =
             );
           }
           
-          // Handle function names (fn(some_function))
-          if (line.trim().startsWith('fn(')) {
+          // Handle function names (#filename/function)
+          if (line.trim().startsWith('#')) {
+            const functionName = line.trim().substring(1); // Remove the # prefix
             return (
               <Typography key={lineIndex} as="h5" visual="h5" modifiers={[]}>
-                {line}
+                {functionName}
               </Typography>
             );
           }

@@ -6,7 +6,13 @@ class OpenAIClient:
     def __init__(self):
         self.client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
-    def generate_conclusion(self, teacher_code: str, student_code: str, comparison_results: Dict[str, Any]) -> str:
+    def generate_conclusion(self, teacher_code_dict: Dict[str, str], student_code_dict: Dict[str, str]) -> str:
+        """Generate a conclusion using OpenAI's API based on the code dictionaries."""
+        
+        # Combine all files' code with their filenames
+        teacher_code = "\n\n".join(f"# File: {filename}\n{code}" for filename, code in teacher_code_dict.items())
+        student_code = "\n\n".join(f"# File: {filename}\n{code}" for filename, code in student_code_dict.items())
+        
         prompt = self._construct_prompt(teacher_code, student_code)
         
         try:
@@ -35,11 +41,15 @@ STUDENT CODE:
 Provide your analysis in the following exact format:
 
 FUNCTION ANALYSIS:
-fn([function_name_1]):
+#[filename1]/[function_name1]
 Status: [OK/ISSUES]
 [Recommendations/Issues]: [For OK status, list any recommendations or observations. For ISSUES status, list critical breaking issues.]
 
-fn([function_name_2]):
+#[filename1]/[function_name2]
+Status: [OK/ISSUES]
+[Recommendations/Issues]: [For OK status, list any recommendations or observations. For ISSUES status, list critical breaking issues.]
+
+#[filename2]/[function_name1]
 Status: [OK/ISSUES]
 [Recommendations/Issues]: [For OK status, list any recommendations or observations. For ISSUES status, list critical breaking issues.]
 ...
@@ -65,23 +75,29 @@ Guidelines:
 6. In the final conclusion, emphasize any functions with Status: ISSUES
 7. DO NOT analyze or comment on the teacher code
 8. ONLY provide feedback on the student code
+9. For code that doesn't have specific functions (like scripts with just main execution), use "main" as the function name
 
 Example format:
 FUNCTION ANALYSIS:
-fn(list_of_phones):
+#utils.py/encrypt
 Status: OK
 Recommendations: 
-  - Consider using a dictionary instead of a list for faster phone lookups
-  - Add checks for invalid phone numbers to make the code more robust
+  - Consider using a dictionary for character mapping to improve performance
+  - Add error handling for invalid characters
 
-fn(phone_brands):
+#utils.py/decrypt
 Status: ISSUES
 Issues: 
-  - The code crashes when given an empty list
-  - When the same brand appears multiple times, it's counted incorrectly
-...
+  - The function crashes when given an empty string
+  - The shift parameter is not properly validated
+
+#script.py/main
+Status: OK
+Recommendations:
+  - Add input validation for edge cases
+  - Consider adding logging for debugging purposes
 
 FINAL CONCLUSION:
-The implementation has critical issues in the phone_brands function where it crashes on empty input and returns incorrect results. Other functions work as expected, with some non-critical implementation differences."""
+The implementation has critical issues in the decrypt function where it crashes on empty input and lacks proper parameter validation. The encrypt function works as expected, with some non-critical implementation differences. Script.py could use some extra logging."""
 
         return prompt 

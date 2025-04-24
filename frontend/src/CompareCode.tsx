@@ -205,54 +205,62 @@ const CompareCode: React.FC = () => {
               </div>
               <Accordion>
                 {Object.entries(responseData.differences.function_specific_diffs).map(
-                  ([funcName, diffs]) => (
-                    <AccordionItem key={funcName} itemKey={funcName} label={funcName}>
-                      <div style={{ padding: '1rem' }}>
-                        <Accordion
-                          onChange={(key, state) => {
-                            if (key === 'structural') {
-                              handleStructuralChange(funcName, state === 'open');
-                            }
-                          }}
-                          defaultItemKey=""
-                        >
-                          <AccordionItem itemKey="strict" label="Strict Comparison">
-                            <TTNewCard>
-                              <TTNewCardContent>
-                                <ul className="comparison-list">
-                                  {diffs.strict_comparison.map((line: string, idx: number) => (
-                                    <li key={idx} className="comparison-list-item">{line}</li>
-                                  ))}
-                                </ul>
-                              </TTNewCardContent>
-                            </TTNewCard>
-                          </AccordionItem>
+                  ([filename, fileDiffs]) => (
+                    <AccordionItem key={filename} itemKey={filename} label={filename}>
+                      <Accordion>
+                        {Object.entries(fileDiffs).map(
+                          ([funcName, diffs]) => (
+                            <AccordionItem key={funcName} itemKey={`${filename}-${funcName}`} label={funcName}>
+                              <div style={{ padding: '1rem' }}>
+                                <Accordion
+                                  onChange={(key, state) => {
+                                    if (key === 'structural') {
+                                      handleStructuralChange(funcName, state === 'open');
+                                    }
+                                  }}
+                                  defaultItemKey=""
+                                >
+                                  <AccordionItem itemKey="strict" label="Strict Comparison">
+                                    <TTNewCard>
+                                      <TTNewCardContent>
+                                        <ul className="comparison-list">
+                                          {diffs.strict_comparison.map((line: string, idx: number) => (
+                                            <li key={idx} className="comparison-list-item">{line}</li>
+                                          ))}
+                                        </ul>
+                                      </TTNewCardContent>
+                                    </TTNewCard>
+                                  </AccordionItem>
 
-                          <AccordionItem 
-                            itemKey="structural" 
-                            label="Structural Comparison"
-                          >
-                            {structuralOpenMap[funcName] && (
-                              <FlowchartComparison
-                                teacherDSL={diffs.teacherDSL}
-                                studentDSL={diffs.studentDSL}
-                              />
-                            )}
-                          </AccordionItem>
+                                  <AccordionItem 
+                                    itemKey="structural" 
+                                    label="Structural Comparison"
+                                  >
+                                    {structuralOpenMap[funcName] && (
+                                      <FlowchartComparison
+                                        teacherDSL={diffs.teacherDSL}
+                                        studentDSL={diffs.studentDSL}
+                                      />
+                                    )}
+                                  </AccordionItem>
 
-                          <AccordionItem 
-                            itemKey="diff" 
-                            label="Diff View"
-                          >
-                            {diffs.unified_diff && (
-                              <DiffView 
-                                diff={diffs.unified_diff}
-                                id={`diff-${funcName}`}
-                              />
-                            )}
-                          </AccordionItem>
-                        </Accordion>
-                      </div>
+                                  <AccordionItem 
+                                    itemKey="diff" 
+                                    label="Diff View"
+                                  >
+                                    {diffs.unified_diff && (
+                                      <DiffView 
+                                        diff={diffs.unified_diff}
+                                        id={`diff-${filename}-${funcName}`}
+                                      />
+                                    )}
+                                  </AccordionItem>
+                                </Accordion>
+                              </div>
+                            </AccordionItem>
+                          )
+                        )}
+                      </Accordion>
                     </AccordionItem>
                   )
                 )}
