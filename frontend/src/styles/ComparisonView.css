@@ -26,4 +26,6 @@
 .comparison-list-item {
   word-break: break-word;
   overflow-wrap: break-word;
+  list-style-type: none;
+  padding-left: 0;
 } 

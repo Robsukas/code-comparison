@@ -7,11 +7,6 @@ class Utils:
 
     @staticmethod
     def detect_code_type(source_code: str) -> str:
-        """Detect if the code contains functions or is a block of code.
-        
-        Returns:
-            str: 'function_based' if code contains functions, 'block_based' otherwise
-        """
         try:
             tree = ast.parse(source_code)
             for node in ast.walk(tree):
@@ -37,7 +32,6 @@ class Utils:
 
     @staticmethod
     def _is_doc_expr(node: ast.AST) -> bool:
-        """True if *node* is an `Expr` whose value is a plain string literal."""
         return (
             isinstance(node, ast.Expr)
             and isinstance(node.value, ast.Constant)   # ast.Str on < 3.8
@@ -46,18 +40,12 @@ class Utils:
 
     @staticmethod
     def extract_main_block(source_code: str) -> str:
-        """
-        Return the main (non-function) part of *source_code* with **all**
-        docstrings removed.  Comments disappear automatically when we unparse.
-        """
         try:
             tree = ast.parse(source_code)
 
-            # ── 1. strip every leading module-level docstring ────────────────
             while tree.body and Utils._is_doc_expr(tree.body[0]):
-                tree.body.pop(0)                       # remove it
+                tree.body.pop(0)
 
-            # ── 2. strip first statement of each def / async def / class ────
             for node in ast.walk(tree):
                 if isinstance(node, (ast.FunctionDef,
                                       ast.AsyncFunctionDef,
@@ -65,10 +53,12 @@ class Utils:
                     if node.body and Utils._is_doc_expr(node.body[0]):
                         node.body.pop(0)
 
-            return ast.unparse(tree)                   # back to source code
+            tree.body = [n for n in tree.body if not Utils._is_doc_expr(n)]
+
+            return ast.unparse(tree)
 
         except SyntaxError:
-            return source_code                         # fall back unchanged
+            return source_code
 
     @staticmethod
     def check_function_mismatch(student_dict: dict, check_dict: dict):
@@ -92,7 +82,6 @@ class Utils:
 
     @staticmethod
     def generate_unified_diff(student_code: str, teacher_code: str, func_name: str) -> str:
-        """Generate a unified diff string for the given student and teacher code."""
         from difflib import unified_diff
         student_lines = student_code.splitlines(keepends=True)
         teacher_lines = teacher_code.splitlines(keepends=True)
@@ -163,14 +152,6 @@ class Utils:
 
     @staticmethod
     def extract_functions_from_files(files_dict: dict) -> dict:
-        """Extract functions from a dictionary of files.
-        
-        Args:
-            files_dict: Dictionary mapping filenames to their content
-            
-        Returns:
-            Dictionary mapping filenames to their function dictionaries
-        """
         result = {}
         for filename, code in files_dict.items():
             result[filename] = Utils.extract_functions(code)
@@ -178,14 +159,6 @@ class Utils:
 
     @staticmethod
     def extract_main_blocks_from_files(files_dict: dict) -> dict:
-        """Extract main blocks from a dictionary of files.
-        
-        Args:
-            files_dict: Dictionary mapping filenames to their content
-            
-        Returns:
-            Dictionary mapping filenames to their main blocks
-        """
         result = {}
         for filename, code in files_dict.items():
             result[filename] = {"main": Utils.extract_main_block(code)}
@@ -193,16 +166,6 @@ class Utils:
 
     @staticmethod
     def compare_files(student_files: dict, teacher_files: dict) -> dict:
-        """Compare student and teacher files.
-        
-        Args:
-            student_files: Dictionary mapping filenames to their content
-            teacher_files: Dictionary mapping filenames to their content
-            
-        Returns:
-            Dictionary with comparison results, structured with module-specific diffs at top level
-            and function-specific diffs organized by filename
-        """
         result = {
             "module_specific_diffs": {
                 "function_mismatch": []

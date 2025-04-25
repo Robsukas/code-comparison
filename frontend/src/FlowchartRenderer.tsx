@@ -56,7 +56,7 @@ const FlowchartRenderer: React.FC<FlowchartRendererProps> = ({
       } catch (error) {
         console.error("Error rendering flowchart:", error);
       }
-    }, 175);
+    }, 200);
 
     return () => {
       if (timerRef.current) {
