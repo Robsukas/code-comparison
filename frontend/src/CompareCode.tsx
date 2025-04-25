@@ -238,8 +238,8 @@ const CompareCode: React.FC = () => {
                                   >
                                     {structuralOpenMap[funcName] && (
                                       <FlowchartComparison
-                                        teacherDSL={diffs.teacherDSL}
-                                        studentDSL={diffs.studentDSL}
+                                        unifiedDSL={diffs.unifiedDSL}
+                                        structural_error={diffs.structural_error}
                                       />
                                     )}
                                   </AccordionItem>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo } from 'react';
+import React, { useEffect, useRef, useMemo } from "react";
 
 interface FlowchartRendererProps {
   dsl: string;
@@ -11,11 +11,16 @@ const FlowchartRenderer: React.FC<FlowchartRendererProps> = ({
   isVisible,
   drawOptions = {},
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const containerIdRef = useRef(`flowchart-${Math.random().toString(36).slice(2)}`);
-  const timerRef = useRef<number | null>(null);
+  const containerRef   = useRef<HTMLDivElement>(null);
+  const containerIdRef = useRef(
+    `flowchart-${Math.random().toString(36).slice(2)}`
+  );
+  const timerRef       = useRef<number | null>(null);
 
-  const memoizedDrawOptions = useMemo(() => drawOptions, [JSON.stringify(drawOptions)]);
+  const memoizedDrawOptions = useMemo(
+    () => drawOptions,
+    [JSON.stringify(drawOptions)]
+  );
 
   useEffect(() => {
     return () => {
@@ -29,11 +34,11 @@ const FlowchartRenderer: React.FC<FlowchartRendererProps> = ({
   useEffect(() => {
     if (!dsl || !isVisible || !containerRef.current) return;
     if (!(window as any).flowchart) {
-      console.error('flowchart.js is not loaded on window!');
+      console.error("flowchart.js is not loaded on window!");
       return;
     }
 
-    containerRef.current.innerHTML = '';
+    containerRef.current.innerHTML = "";
 
     timerRef.current = window.setTimeout(() => {
       try {
@@ -41,13 +46,15 @@ const FlowchartRenderer: React.FC<FlowchartRendererProps> = ({
         chart.drawSVG(containerIdRef.current, {
           scale: memoizedDrawOptions.scale || 1,
           flowstate: {
-            teacher_extra: { fill: '#c2f0c2' },
-            student_extra: { fill: '#f5c2c2' },
+            diff_teacher_only: { fill: "#cce5ff" }, // blue
+            diff_student_only: { fill: "#f5c2c2" }, // red
+            diff_replace:      { fill: "#ffd17c" }, // orange (Δ big diff)
+            diff_edit:         { fill: "#ffffb3" }, // yellow (✎ small edit)
           },
           ...memoizedDrawOptions,
         });
       } catch (error) {
-        console.error('Error rendering flowchart:', error);
+        console.error("Error rendering flowchart:", error);
       }
     }, 175);
 
@@ -63,7 +70,7 @@ const FlowchartRenderer: React.FC<FlowchartRendererProps> = ({
     <div
       ref={containerRef}
       id={containerIdRef.current}
-      style={{ width: '100%', minHeight: '300px', overflowX: 'auto' }}
+      style={{ width: "100%", minHeight: "300px", overflowX: "auto" }}
     />
   );
 };

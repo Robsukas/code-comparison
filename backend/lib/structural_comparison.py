@@ -1,106 +1,143 @@
 import re
+from difflib import SequenceMatcher, ndiff
 from pyflowchart import Flowchart
 
+
 class StructuralComparator:
+    """
+    Build ONE Flowchart-DSL with four colour flags
+        diff_teacher_only   blue
+        diff_student_only   red
+        diff_replace        orange - big label diff  (Δ prefix)
+        diff_edit           yellow - small label diff (✎ prefix)
+    """
+
+    @staticmethod
+    def extract_node_type(line: str) -> str:
+        m = re.search(r'=>\s*([^:]+)', line)
+        return m.group(1).strip() if m else ""
+
+    @staticmethod
+    def extract_node_label(line: str) -> str:
+        return line.split(':', 1)[1].split('|', 1)[0]
+
+    @staticmethod
+    def extract_node_id(line: str) -> str:
+        typ   = StructuralComparator.extract_node_type(line)
+        label = StructuralComparator.extract_node_label(line)
+        return f"{typ}|{label[:30].strip()}"
+
+    @staticmethod
+    def split_nodes(dsl: str):
+        nodes, other = [], []
+        for ln in dsl.splitlines():
+            ln = ln.strip()
+            if '=>' in ln:
+                nodes.append((ln, StructuralComparator.extract_node_id(ln)))
+            else:
+                other.append(ln)
+        return nodes, other
+
+
+    @staticmethod
+    def first_pass(t_ids, s_ids):
+        return SequenceMatcher(a=t_ids, b=s_ids, autojunk=False).get_opcodes()
+
+    @staticmethod
+    def refine_replace_spans(opcodes, t_nodes, s_nodes):
+        refined = []
+        for tag, t_lo, t_hi, s_lo, s_hi in opcodes:
+            if tag != "replace":
+                refined.append((tag, t_lo, t_hi, s_lo, s_hi))
+                continue
+
+            typ_a = [n[1].split('|', 1)[0] for n in t_nodes[t_lo:t_hi]]
+            typ_b = [n[1].split('|', 1)[0] for n in s_nodes[s_lo:s_hi]]
+
+            for sub in SequenceMatcher(a=typ_a, b=typ_b,
+                                       autojunk=False).get_opcodes():
+                st, a0, a1, b0, b1 = sub
+                refined.append((st, t_lo+a0, t_lo+a1, s_lo+b0, s_lo+b1))
+        return refined
+
+
     @staticmethod
     def compare(student_code: str, teacher_code: str) -> dict:
         try:
-            teacher_flow = Flowchart.from_code(teacher_code).flowchart()
+            t_flow = Flowchart.from_code(teacher_code).flowchart()
+            s_flow = Flowchart.from_code(student_code).flowchart()
         except Exception as e:
-            teacher_flow = f"Error generating teacher flowchart: {e}"
-        try:
-            student_flow = Flowchart.from_code(student_code).flowchart()
-        except Exception as e:
-            student_flow = f"Error generating student flowchart: {e}"
+            return {"unifiedDSL": "", "structural_error": str(e)}
 
-        teacher_dsl_lines = teacher_flow.splitlines()
-        student_dsl_lines = student_flow.splitlines()
+        t_nodes, t_other = StructuralComparator.split_nodes(t_flow)
+        s_nodes, _       = StructuralComparator.split_nodes(s_flow)
 
-        teacher_nodes, teacher_other = StructuralComparator.extract_nodes_and_other(teacher_dsl_lines)
-        student_nodes, student_other = StructuralComparator.extract_nodes_and_other(student_dsl_lines)
+        first   = StructuralComparator.first_pass(
+                     [n[1] for n in t_nodes], [n[1] for n in s_nodes])
+        opcodes = StructuralComparator.refine_replace_spans(first,
+                                                            t_nodes, s_nodes)
 
-        teacher_nodes_flagged, student_nodes_flagged = StructuralComparator.compare_by_type_in_order(
-            teacher_nodes, student_nodes
-        )
-
-        teacher_dsl_with_flags = StructuralComparator.rebuild_dsl(
-            teacher_nodes_flagged, teacher_other
-        )
-        student_dsl_with_flags = StructuralComparator.rebuild_dsl(
-            student_nodes_flagged, student_other
-        )
-
-        return {
-            "teacherDSL": teacher_dsl_with_flags,
-            "studentDSL": student_dsl_with_flags
-        }
+        unified = StructuralComparator.merged_dsl(opcodes,
+                                                  t_nodes, s_nodes, t_other)
+        return {"unifiedDSL": unified, "structural_error": None}
 
     @staticmethod
-    def extract_nodes_and_other(lines):
-        nodes = []
-        other = []
-        for line in lines:
-            trimmed = line.strip()
-            if '=>' in trimmed:
-                node_type = StructuralComparator.extract_node_type(trimmed)
-                nodes.append((trimmed, node_type))
+    def merged_dsl(opcodes, t_nodes, s_nodes, t_other):
+        out = []
+
+        def flag(line, suf):
+            return f"{line.split('|',1)[0]}|{suf}"
+
+        def small_edit(a: str, b: str) -> bool:
+            if not a or not b:
+                return False
+            diff = sum(1 for c in ndiff(a, b) if c[0] in "-+")
+            return diff <= 4 or diff / max(len(a), len(b)) <= 0.25
+
+        def overlay(t_line, s_line):
+            teacher_lbl = StructuralComparator.extract_node_label(t_line).strip()
+            student_lbl = StructuralComparator.extract_node_label(s_line).strip()
+
+            base = t_line.split(":", 1)[0]            # 'op8=>output'
+
+            if small_edit(teacher_lbl, student_lbl):
+                # yellow
+                glyph = "✎"
+                flag  = "diff_edit"
             else:
-                other.append(trimmed)
-        return nodes, other
+                # orange
+                glyph = "Δ"
+                flag  = "diff_replace"
 
-    @staticmethod
-    def extract_node_type(node_line):
-        match = re.search(r'=>([^:]+)', node_line)
-        if match:
-            return match.group(1).strip()
-        return ""  # fallback if no match
 
-    @staticmethod
-    def compare_by_type_in_order(teacher_nodes, student_nodes):
-        i = 0
-        t_len = len(teacher_nodes)
-        s_len = len(student_nodes)
+            body = (
+                f"teacher: {teacher_lbl}\n"
+                f"{glyph}\n"
+                f"student: {student_lbl}"
+            )
 
-        teacher_nodes_flagged = list(teacher_nodes)
-        student_nodes_flagged = list(student_nodes)
+            return f"{base}: {body}|{flag}"
 
-        while i < max(t_len, s_len):
-            if i < t_len and i < s_len:
-                teacher_type = teacher_nodes_flagged[i][1]
-                student_type = student_nodes_flagged[i][1]
 
-                if teacher_type != student_type:
-                    teacher_line = teacher_nodes_flagged[i][0]
-                    student_line = student_nodes_flagged[i][0]
+        for tag, t_lo, t_hi, s_lo, s_hi in opcodes:
+            if tag == "equal":
+                out.extend(t_nodes[i][0] for i in range(t_lo, t_hi))
 
-                    if '|teacher_extra' not in teacher_line:
-                        teacher_line += '|teacher_extra'
-                    if '|student_extra' not in student_line:
-                        student_line += '|student_extra'
+            elif tag == "replace":
+                for i, j in zip(range(t_lo, t_hi), range(s_lo, s_hi)):
+                    out.append(overlay(t_nodes[i][0], s_nodes[j][0]))
+                for i in range(i + 1, t_hi):
+                    out.append(flag(t_nodes[i][0], "diff_teacher_only"))
+                for j in range(j + 1, s_hi):
+                    out.append(flag(s_nodes[j][0], "diff_student_only"))
 
-                    teacher_nodes_flagged[i] = (teacher_line, teacher_type)
-                    student_nodes_flagged[i] = (student_line, student_type)
-            else:
-                if i < t_len:
-                    t_line, t_type = teacher_nodes_flagged[i]
-                    if '|teacher_extra' not in t_line:
-                        t_line += '|teacher_extra'
-                    teacher_nodes_flagged[i] = (t_line, t_type)
-                if i < s_len:
-                    s_line, s_type = student_nodes_flagged[i]
-                    if '|student_extra' not in s_line:
-                        s_line += '|student_extra'
-                    student_nodes_flagged[i] = (s_line, s_type)
+            elif tag == "delete":
+                for i in range(t_lo, t_hi):
+                    out.append(flag(t_nodes[i][0], "diff_teacher_only"))
 
-            i += 1
+            elif tag == "insert":
+                for j in range(s_lo, s_hi):
+                    out.append(flag(s_nodes[j][0], "diff_student_only"))
 
-        return teacher_nodes_flagged, student_nodes_flagged
-
-    @staticmethod
-    def rebuild_dsl(flagged_nodes, other_lines):
-        lines = []
-        for (line, _) in flagged_nodes:
-            lines.append(line)
-        for item in other_lines:
-            lines.append(item)
-        return "\n".join(lines)
+        out.extend(t_other)
+        return "\n".join(out)

@@ -126,8 +126,8 @@ class Utils:
             
             result["main"] = {
                 "strict_comparison": strict_comparison,
-                "teacherDSL": structural_info["teacherDSL"],
-                "studentDSL": structural_info["studentDSL"],
+                "unifiedDSL": structural_info["unifiedDSL"],
+                "structuralComparison": structural_info["structural_error"],
                 "unified_diff": unified_diff
             }
             
@@ -148,8 +148,8 @@ class Utils:
                     
                     result[func_name] = {
                         "strict_comparison": strict_comparison,
-                        "teacherDSL": structural_info["teacherDSL"],
-                        "studentDSL": structural_info["studentDSL"],
+                        "unifiedDSL": structural_info["unifiedDSL"],
+                        "structuralComparison": structural_info["structural_error"],
                         "unified_diff": unified_diff
                     }
             

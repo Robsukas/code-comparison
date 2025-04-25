@@ -1,8 +1,8 @@
 // Types
 export interface FunctionDiffs {
   strict_comparison: string[];
-  teacherDSL: string;
-  studentDSL: string;
+  unifiedDSL: string;
+  structural_error?: string | null;   // renamed
   unified_diff: string;
   diffMetadata: {
     extraInStudent: string[];
