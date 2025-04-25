@@ -3,12 +3,12 @@ from lib.strict_comparison import StrictComparator
 from lib.utils import Utils
 from lib.gitlab_client import GitLabClient
 from lib.openai_client import OpenAIClient
-import code_diff as cd
-import textwrap
+from lib.ai_client import AIClient
+
 
 diff_bp = Blueprint('diff', __name__)
 gitlab_client = GitLabClient()
-openai_client = OpenAIClient()
+ai_client = AIClient()
 
 @diff_bp.route('/api/diff', methods=['POST'])
 def diff_endpoint():
@@ -59,7 +59,9 @@ def diff_endpoint():
         conclusion = None
         if use_llm:
             try:
-                conclusion = openai_client.generate_conclusion(teacher_code_dict, student_code_dict)
+                conclusion = ai_client.generate_conclusion(
+                    teacher_code_dict, student_code_dict
+                )
             except Exception as e:
                 if 'insufficient_quota' in str(e):
                     conclusion = "Analysis conclusion is currently unavailable due to API quota limitations. Please try again later or contact support."

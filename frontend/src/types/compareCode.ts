@@ -47,14 +47,8 @@ export const EXERCISES = [
   { value: 'EX02', label: 'EX02' },
   { value: 'EX03', label: 'EX03' },
   { value: 'EX04', label: 'EX04' },
-  { value: 'EX05', label: 'EX05' },
   { value: 'EX06', label: 'EX06' },
   { value: 'EX07', label: 'EX07' },
   { value: 'EX08', label: 'EX08' },
-  { value: 'EX09', label: 'EX09' },
-  { value: 'EX10', label: 'EX10' },
-  { value: 'EX11', label: 'EX11' },
-  { value: 'EX12', label: 'EX12' },
-  { value: 'EX13', label: 'EX13' },
-  { value: 'EX14', label: 'EX14' }
+  { value: 'EX09', label: 'EX09' }
 ]; 

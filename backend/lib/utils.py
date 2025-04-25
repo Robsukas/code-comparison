@@ -71,12 +71,12 @@ class Utils:
                 matched_in_check[fn_name] = check_dict[fn_name]
             else:
                 differences_list.append(
-                    f"Function '{fn_name}' is in student code but missing in check code."
+                    f"Function '{fn_name}' is in student code but missing in teacher code."
                 )
         for fn_name in check_dict.keys():
             if fn_name not in student_dict:
                 differences_list.append(
-                    f"Function '{fn_name}' is in check code but missing in student code."
+                    f"Function '{fn_name}' is in teacher code but missing in student code."
                 )
         return matched_in_student, matched_in_check, differences_list
 
