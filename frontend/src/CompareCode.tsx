@@ -52,7 +52,7 @@ const CompareCode: React.FC = () => {
     setIsLoading(true);
     
     try {
-      const response = await fetch('http://localhost:5000/api/diff', {
+      const response = await fetch('/api/diff', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -95,7 +95,11 @@ const CompareCode: React.FC = () => {
 
   return (
     <div className="compare-code-container">
-      <Heading as="h2" visual="h2" color="primary">Compare Student Code</Heading>
+      <div style={{ marginBottom: '1rem' }}>
+        <Heading as="h2" visual="h2" color="primary">
+          Compare Student Code <span style={{ marginLeft: '0.5rem' }}><Typography as="span" color="secondary">v0.1.0</Typography></span>
+        </Heading>
+      </div>
 
       <div className="inputs-container">
         <div className="input-block">
