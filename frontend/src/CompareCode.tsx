@@ -52,7 +52,7 @@ const CompareCode: React.FC = () => {
     setIsLoading(true);
     
     try {
-      const response = await fetch('/services/codecomparison/api/diff', {
+      const response = await fetch('/api/diff', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
