@@ -1,14 +1,14 @@
 :80 {
 
+
 	handle_path /services/codecomparison/api/* {
 		reverse_proxy backend:5000
 	}
 
 
-	handle /services/codecomparison/* {
+	handle_path /services/codecomparison/* {
 		reverse_proxy frontend:80
 	}
 
-	# Fallback
 	respond "Not found" 404
 }
