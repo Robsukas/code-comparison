@@ -30,6 +30,4 @@ class AIClient:
                     teacher_code_dict, student_code_dict
                 )
             except Exception as o_err:
-                raise RuntimeError(
-                    f"Gemini error: {g_err} │ OpenAI error: {o_err}"
-                ) from o_err
+                return f"Gemini error: {g_err} │ OpenAI error: {o_err}"

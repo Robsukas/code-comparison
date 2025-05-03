@@ -25,6 +25,7 @@ const CompareCode: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState('');
   const [responseData, setResponseData] = useState<CompareCodeResponse | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
+  const [softErr,  setSoftErr] = useState<string[]>([]);
   const [structuralOpenMap, setStructuralOpenMap] = useState<{ [funcName: string]: boolean }>({});
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isYearDropdownOpen, setIsYearDropdownOpen] = useState(false);
@@ -46,37 +47,37 @@ const CompareCode: React.FC = () => {
       setErrorMsg('Please fill in student ID, select an exercise, and select a year');
       return;
     }
-
     setErrorMsg('');
+    setSoftErr([]);
     setResponseData(null);
     setIsLoading(true);
-    
+
     try {
-      const response = await fetch('api/diff', {
-        method: 'POST',
+      const res = await fetch('api/diff', {
+        method : 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body   : JSON.stringify({
           student_id: studentId,
-          exercise: selectedExercise,
-          year: selectedYear,
-          use_llm: useLLM
+          exercise  : selectedExercise,
+          year      : selectedYear,
+          use_llm   : useLLM,
         }),
       });
-      
-      const rawText = await response.text();
 
-      if (!response.ok) {
-        setErrorMsg(`HTTP error ${response.status}: ${rawText || 'Unknown error'}`);
-      } else {
-        try {
-          const data: CompareCodeResponse = JSON.parse(rawText);
-          setResponseData(data);
-        } catch (parseError: any) {
-          setErrorMsg(`JSON parse error: ${parseError.message}`);
-        }
+      if (!res.ok) {
+        setErrorMsg(`HTTP ${res.status}: ${await res.text() || 'Unknown error'}`);
+        return;
       }
-    } catch (err: any) {
-      setErrorMsg(`Error occurred: ${err.message}`);
+
+      const data: CompareCodeResponse = await res.json();
+      setResponseData(data);
+      setSoftErr([
+        ...(data.diff_error ? [data.diff_error] : []),
+        ...(data.llm_error  ? [data.llm_error ] : []),
+      ]);
+
+    } catch (e:any) {
+      setErrorMsg(`Network error: ${e.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -154,6 +155,16 @@ const CompareCode: React.FC = () => {
           <Typography as="p" color="danger">
             <Typography as="strong">Error:</Typography> {errorMsg}
           </Typography>
+        </div>
+      )}
+
+      {softErr.length > 0 && (
+        <div style={{marginTop:'1rem'}}>
+          {softErr.map((msg,i) => (
+            <Typography key={i} as="p" color="warning">
+              {msg}
+            </Typography>
+          ))}
         </div>
       )}
 

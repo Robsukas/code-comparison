@@ -29,6 +29,8 @@ export interface CompareCodeResponse {
   message?: string;
   differences?: Differences;
   conclusion?: string;
+  diff_error?: string;
+  llm_error?: string;
   error?: string;
   details?: string;
 }

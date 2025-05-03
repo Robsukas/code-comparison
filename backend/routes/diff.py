@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from lib.strict_comparison import StrictComparator
 from lib.utils import Utils
 from lib.gitlab_client import GitLabClient
@@ -50,31 +50,31 @@ def diff_endpoint():
             'error': 'Code type mismatch',
             'details': f'Student code is {student_code_type} while teacher code is {teacher_code_type}'
         }), 400
+    
+    diff_error = None
+    llm_error  = None
+    differences = None
+    conclusion  = None 
 
     try:
-        # Compare all files
         differences = Utils.compare_files(student_code_dict, teacher_code_dict)
-
-        
-        conclusion = None
-        if use_llm:
-            try:
-                conclusion = ai_client.generate_conclusion(
-                    teacher_code_dict, student_code_dict
-                )
-            except Exception as e:
-                if 'insufficient_quota' in str(e):
-                    conclusion = "Analysis conclusion is currently unavailable due to API quota limitations. Please try again later or contact support."
-                else:
-                    conclusion = f"Error generating conclusion: {str(e)}"
-        
-        response = {
-            'message': 'Code blocks processed successfully',
-            'differences': differences,
-            'conclusion': conclusion
-        }
-        
-        return jsonify(response), 200
-        
     except Exception as e:
-        return jsonify({'error': 'Error processing code differences', 'details': str(e)}), 500
+        diff_error = f"diff failed: {e}"
+        current_app.logger.exception(diff_error)
+
+    if use_llm:
+        try:
+            conclusion = ai_client.generate_conclusion(
+                teacher_code_dict, student_code_dict
+            )
+        except Exception as e:
+            llm_error = f"LLM failed: {e}"
+            current_app.logger.warning(llm_error)
+
+    return jsonify(
+        message      = "ok",
+        differences  = differences,   # may be None
+        conclusion   = conclusion,    # may be None
+        diff_error   = diff_error,    # str | None
+        llm_error    = llm_error,     # str | None
+    ), 200
