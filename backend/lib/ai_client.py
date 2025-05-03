@@ -6,8 +6,8 @@ from lib.openai_client import OpenAIClient
 
 _POOL = concurrent.futures.ThreadPoolExecutor(max_workers=2)
 
-GEMINI_TIMEOUT = 20   # seconds
-OPENAI_TIMEOUT  = 30  # seconds
+GEMINI_TIMEOUT = 55   # seconds
+OPENAI_TIMEOUT  = 60  # seconds
 
 
 class AIClient:
