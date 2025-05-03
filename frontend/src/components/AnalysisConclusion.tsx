@@ -3,9 +3,10 @@ import { Typography, Separator, Tag } from 'taltech-styleguide';
 
 interface AnalysisConclusionProps {
   conclusion: string;
+  llmModel?: string | null;
 }
 
-const AnalysisConclusion: React.FC<AnalysisConclusionProps> = ({ conclusion }) => {
+const AnalysisConclusion: React.FC<AnalysisConclusionProps> = ({ conclusion, llmModel }) => {
   // Split the text into sections
   const sections = conclusion.split('\n\n');
   
@@ -18,6 +19,14 @@ const AnalysisConclusion: React.FC<AnalysisConclusionProps> = ({ conclusion }) =
           size="md"
         />
       </div>
+      {llmModel && (
+        <Tag
+          text={llmModel}
+          variant="info-filled"
+          size="md"
+          style={{ marginLeft: '0.5rem', marginBottom: '1rem' }}
+        />
+      )}
       {sections.map((section, sectionIndex) => {
         // Process each line within the section
         const processedLines = section.split('\n').map((line, lineIndex) => {

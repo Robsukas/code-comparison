@@ -39,12 +39,13 @@ class AIClient:
         # ---------- 1) Gemini ------------------------------------------------
         gemini_error = None
         try:
-            return self._run_with_timeout(
+            text = self._run_with_timeout(
                 lambda: self._gemini.generate_conclusion(
                     teacher_code_dict, student_code_dict
                 ),
                 GEMINI_TIMEOUT,
             )
+            return text, "Gemini (gemini-2.5-flash-preview-04-17)"
         except Exception as exc:
             gemini_error = exc          # keep it alive for later
             logging.warning(
@@ -55,12 +56,13 @@ class AIClient:
 
         # ---------- 2) OpenAI -----------------------------------------------
         try:
-            return self._run_with_timeout(
+            text = self._run_with_timeout(
                 lambda: self._openai.generate_conclusion(
                     teacher_code_dict, student_code_dict
                 ),
                 OPENAI_TIMEOUT,
             )
+            return text, "OpenAI (o4-mini)"
         except Exception as openai_error:
             # raise a single RuntimeError that records both failures
             raise RuntimeError(

@@ -31,6 +31,7 @@ export interface CompareCodeResponse {
   conclusion?: string;
   diff_error?: string;
   llm_error?: string;
+  llm_model?: string | null;
   error?: string;
   details?: string;
 }

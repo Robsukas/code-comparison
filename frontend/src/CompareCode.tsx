@@ -180,7 +180,10 @@ const CompareCode: React.FC = () => {
             <div style={{ marginBottom: '2rem' }}>
               <TTNewCard>
                 <TTNewCardContent>
-                  <AnalysisConclusion conclusion={responseData.conclusion} />
+                  <AnalysisConclusion 
+                    conclusion={responseData.conclusion} 
+                    llmModel={responseData.llm_model} 
+                  />
                 </TTNewCardContent>
               </TTNewCard>
             </div>

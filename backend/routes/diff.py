@@ -55,6 +55,7 @@ def diff_endpoint():
     llm_error  = None
     differences = None
     conclusion  = None 
+    llm_model  = None
 
     try:
         differences = Utils.compare_files(student_code_dict, teacher_code_dict)
@@ -64,17 +65,16 @@ def diff_endpoint():
 
     if use_llm:
         try:
-            conclusion = ai_client.generate_conclusion(
-                teacher_code_dict, student_code_dict
-            )
+            conclusion, llm_model = ai_client.generate_conclusion(teacher_code_dict, student_code_dict)
         except Exception as e:
             llm_error = f"LLM failed: {e}"
             current_app.logger.warning(llm_error)
 
     return jsonify(
         message      = "ok",
-        differences  = differences,   # may be None
-        conclusion   = conclusion,    # may be None
-        diff_error   = diff_error,    # str | None
-        llm_error    = llm_error,     # str | None
+        differences  = differences,
+        conclusion   = conclusion,
+        llm_model = llm_model,
+        diff_error   = diff_error,
+        llm_error    = llm_error,
     ), 200
