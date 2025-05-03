@@ -1,6 +1,6 @@
 :80 {
 
-	handle /api/* {
+	handle /services/codecomparison/api/* {
 		reverse_proxy backend:5000
 	}
 
