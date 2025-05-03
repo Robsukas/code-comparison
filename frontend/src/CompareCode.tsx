@@ -52,7 +52,9 @@ const CompareCode: React.FC = () => {
     setIsLoading(true);
     
     try {
-      const response = await fetch('/api/diff', {
+      const api = (endpoint: string) =>
+        new URL(endpoint, import.meta.env.BASE_URL).pathname;
+      const response = await fetch(api('/api/diff'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
