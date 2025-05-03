@@ -1,6 +1,7 @@
 :80 {
 
-	handle /services/codecomparison {
+	@noslash path ^/services/codecomparison$
+	handle @noslash {
 		redir /services/codecomparison/ 308
 	}
 
