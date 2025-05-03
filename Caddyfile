@@ -4,7 +4,8 @@
 		redir /services/codecomparison/ 308
 	}
 
-	handle_path /services/codecomparison/api/* {
+	handle /services/codecomparison/api/* {
+		uri strip_prefix /services/codecomparison
 		reverse_proxy backend:5000
 	}
 
