@@ -1,7 +1,6 @@
 :80 {
 
-	@noslash path /services/codecomparison
-	handle @noslash {
+	handle /services/codecomparison {
 		redir /services/codecomparison/ 308
 	}
 
@@ -10,12 +9,8 @@
 		reverse_proxy backend:5000
 	}
 
-	handle /services/codecomparison/ {
-		uri strip_prefix /services/codecomparison
-		reverse_proxy frontend:80
-	}
 
-	handle_path /services/codecomparison/* {
+	handle /services/codecomparison/* {
 		reverse_proxy frontend:80
 	}
 
