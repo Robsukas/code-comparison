@@ -12,21 +12,20 @@ const AnalysisConclusion: React.FC<AnalysisConclusionProps> = ({ conclusion, llm
   
   return (
     <div style={{ whiteSpace: 'pre-wrap' }}>
-      <div style={{ marginBottom: '1rem' }}>
-        <Tag 
-          text="Experimental AI Analysis" 
-          variant="danger-filled"
-          size="md"
-        />
+      <div
+        style={{
+          display: 'flex',
+          gap: '0.5rem',      // distance between the chips
+          marginBottom: '1rem',
+          alignItems: 'center',
+        }}
+      >
+        <Tag text="Experimental AI Analysis" variant="danger-filled" size="md" />
+        
+        {llmModel && (
+          <Tag text={llmModel} variant="info-filled" size="md" />
+        )}
       </div>
-      {llmModel && (
-        <Tag
-          text={llmModel}
-          variant="info-filled"
-          size="md"
-          style={{ marginLeft: '0.5rem', marginBottom: '1rem' }}
-        />
-      )}
       {sections.map((section, sectionIndex) => {
         // Process each line within the section
         const processedLines = section.split('\n').map((line, lineIndex) => {

@@ -45,7 +45,7 @@ class AIClient:
                 ),
                 GEMINI_TIMEOUT,
             )
-            return text, "Gemini (gemini-2.5-flash-preview-04-17)"
+            return text, "Gemini (gemini-2.5-flash-preview)"
         except Exception as exc:
             gemini_error = exc          # keep it alive for later
             logging.warning(
