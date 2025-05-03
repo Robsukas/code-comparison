@@ -10,7 +10,7 @@ diff_bp = Blueprint('diff', __name__)
 gitlab_client = GitLabClient()
 ai_client = AIClient()
 
-@diff_bp.route('/services/codecomparison/api/diff', methods=['POST'])
+@diff_bp.route('/api/diff', methods=['POST'])
 def diff_endpoint():
     data = request.get_json()
 

@@ -1,10 +1,15 @@
 :80 {
 
-	handle /services/codecomparison/api/* {
+	handle /services/codecomparison {
+		uri strip_prefix /services/codecomparison
+		reverse_proxy frontend:80
+	}
+
+	handle_path /services/codecomparison/api/* {
 		reverse_proxy backend:5000
 	}
 
-	handle {
+	handle_path /services/codecomparison/* {
 		reverse_proxy frontend:80
 	}
 
