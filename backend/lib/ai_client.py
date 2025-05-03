@@ -1,46 +1,68 @@
 import concurrent.futures, logging
+from typing import Dict
 
 from lib.gemini_client import GeminiClient
 from lib.openai_client import OpenAIClient
-from typing import Dict
 
 _POOL = concurrent.futures.ThreadPoolExecutor(max_workers=2)
 
-GEMINI_TIMEOUT = 20
-OPENAI_TIMEOUT = 30
+GEMINI_TIMEOUT = 20   # seconds
+OPENAI_TIMEOUT  = 30  # seconds
+
 
 class AIClient:
-    """
-    Try Gemini → fall back to OpenAI automatically.
-    """
+    """Try Gemini first; fall back to OpenAI. Hard‑time‑out each step."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._gemini = GeminiClient(model="gemini-2.5-flash-preview-04-17")
         self._openai = OpenAIClient(model="o4-mini")
 
-    def _gemini_call(self, t: Dict[str, str], s: Dict[str, str]) -> str:
-        return self._gemini.generate_conclusion(t, s)
+    # ---- internal helpers -------------------------------------------------
 
-    def _openai_call(self, t: Dict[str, str], s: Dict[str, str]) -> str:
-        return self._openai.generate_conclusion(t, s)
-
-    def generate_conclusion(self, teacher_code_dict, student_code_dict) -> str:
-        # 1) Gemini (hard‑stop after 20 s)
-        g_future = _POOL.submit(
-            self._gemini_call, teacher_code_dict, student_code_dict
-        )
+    def _run_with_timeout(self, fn, timeout: int):
+        """Run ``fn`` in the pool, enforcing *timeout* seconds."""
+        fut = _POOL.submit(fn)
         try:
-            return g_future.result(timeout=GEMINI_TIMEOUT)
-        except Exception as g_err:
+            return fut.result(timeout=timeout)
+        finally:
+            # if the work is still running, stop it so the thread is freed
+            fut.cancel()
+
+    # ---- public API -------------------------------------------------------
+
+    def generate_conclusion(
+        self,
+        teacher_code_dict: Dict[str, str],
+        student_code_dict: Dict[str, str],
+    ) -> str:
+
+        # ---------- 1) Gemini ------------------------------------------------
+        gemini_error = None
+        try:
+            return self._run_with_timeout(
+                lambda: self._gemini.generate_conclusion(
+                    teacher_code_dict, student_code_dict
+                ),
+                GEMINI_TIMEOUT,
+            )
+        except Exception as exc:
+            gemini_error = exc          # keep it alive for later
             logging.warning(
-                "Gemini failed or timed‑out (%s) – trying OpenAI (o4‑mini)", g_err
+                "Gemini failed or timed out after %ss → falling back to OpenAI: %s",
+                GEMINI_TIMEOUT,
+                exc,
             )
 
-        # 2) OpenAI (hard‑stop after 30 s)
-        o_future = _POOL.submit(
-            self._openai_call, teacher_code_dict, student_code_dict
-        )
+        # ---------- 2) OpenAI -----------------------------------------------
         try:
-            return o_future.result(timeout=OPENAI_TIMEOUT)
-        except Exception as o_err:
-            return f"Gemini error: {g_err} │ OpenAI error: {o_err}"
+            return self._run_with_timeout(
+                lambda: self._openai.generate_conclusion(
+                    teacher_code_dict, student_code_dict
+                ),
+                OPENAI_TIMEOUT,
+            )
+        except Exception as openai_error:
+            # raise a single RuntimeError that records both failures
+            raise RuntimeError(
+                f"Gemini error: {gemini_error!r} │ OpenAI error: {openai_error!r}"
+            ) from openai_error
