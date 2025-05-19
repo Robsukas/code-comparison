@@ -1,3 +1,26 @@
+/**
+ * Compare Code Component
+ * 
+ * Main component for comparing student code against teacher code. Provides:
+ * - Student ID input
+ * - Exercise and year selection
+ * - AI analysis toggle
+ * - Multiple comparison views:
+ *   - Strict comparison
+ *   - Structural comparison (flowchart)
+ *   - Diff view
+ *   - AI analysis conclusion
+ * 
+ * The component handles:
+ * - Form validation
+ * - API communication
+ * - Error handling
+ * - Loading states
+ * - Collapsible comparison sections
+ * 
+ * @component
+ */
+
 import React, { useState } from 'react';
 import { 
   TTNewButton, 
@@ -18,21 +41,36 @@ import AnalysisConclusion from './components/AnalysisConclusion';
 import DiffView from './components/DiffView';
 import './styles/ComparisonView.css';
 
+/**
+ * CompareCode Component
+ * 
+ * Main interface for code comparison functionality. Manages:
+ * - Form state and validation
+ * - API requests and responses
+ * - Error handling and display
+ * - Comparison view organization
+ * 
+ * @returns {JSX.Element} Complete comparison interface
+ */
 const CompareCode: React.FC = () => {
-  // State
+  // Form state
   const [studentId, setStudentId] = useState('');
   const [selectedExercise, setSelectedExercise] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
+  
+  // Response and error state
   const [responseData, setResponseData] = useState<CompareCodeResponse | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
-  const [softErr,  setSoftErr] = useState<string[]>([]);
+  const [softErr, setSoftErr] = useState<string[]>([]);
+  
+  // UI state
   const [structuralOpenMap, setStructuralOpenMap] = useState<{ [funcName: string]: boolean }>({});
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isYearDropdownOpen, setIsYearDropdownOpen] = useState(false);
   const [useLLM, setUseLLM] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Filter options
+  // Filter options for AI analysis toggle
   const filterOptions = [
     {
       color: '#51BFD3',
@@ -41,7 +79,12 @@ const CompareCode: React.FC = () => {
     }
   ];
 
-  // Handlers
+  /**
+   * Handles form submission and API request
+   * 
+   * Validates form inputs and makes API request to compare code.
+   * Manages loading state and error handling.
+   */
   const handleSubmit = async () => {
     if (!studentId || !selectedExercise || !selectedYear) {
       setErrorMsg('Please fill in student ID, select an exercise, and select a year');
@@ -54,18 +97,18 @@ const CompareCode: React.FC = () => {
 
     try {
       const res = await fetch('api/diff', {
-        method : 'POST',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body   : JSON.stringify({
+        body: JSON.stringify({
           student_id: studentId,
-          exercise  : selectedExercise,
-          year      : selectedYear,
-          use_llm   : useLLM,
+          exercise: selectedExercise,
+          year: selectedYear,
+          use_llm: useLLM,
         }),
       });
 
       if (!res.ok) {
-        setErrorMsg(`HTTP ${res.status}: ${await res.text() || 'Unknown error'}`);
+        setErrorMsg(`HTTP ${res.status}: ${await res.text() || 'Unknown error'}`);
         return;
       }
 
@@ -73,16 +116,22 @@ const CompareCode: React.FC = () => {
       setResponseData(data);
       setSoftErr([
         ...(data.diff_error ? [data.diff_error] : []),
-        ...(data.llm_error  ? [data.llm_error ] : []),
+        ...(data.llm_error ? [data.llm_error] : []),
       ]);
 
-    } catch (e:any) {
+    } catch (e: any) {
       setErrorMsg(`Network error: ${e.message}`);
     } finally {
       setIsLoading(false);
     }
   };
 
+  /**
+   * Handles structural comparison section state
+   * 
+   * @param {string} funcName - Name of the function being compared
+   * @param {boolean} isOpen - Whether the section should be open
+   */
   const handleStructuralChange = (funcName: string, isOpen: boolean) => {
     setStructuralOpenMap(prev => ({
       ...prev,
@@ -90,18 +139,25 @@ const CompareCode: React.FC = () => {
     }));
   };
 
+  /**
+   * Handles AI analysis filter changes
+   * 
+   * @param {Array} values - Selected filter values
+   */
   const handleFilterChange = (values: any[]) => {
     setUseLLM(values.some(value => value.value === 'llm'));
   };
 
   return (
     <div className="compare-code-container">
+      {/* Header section */}
       <div style={{ marginBottom: '1rem' }}>
         <Heading as="h2" visual="h2" color="primary">
           Compare Student Code <span style={{ marginLeft: '0.5rem' }}><Typography as="span" color="secondary">v0.1.0</Typography></span>
         </Heading>
       </div>
 
+      {/* Input form section */}
       <div className="inputs-container">
         <div className="input-block">
           <label htmlFor="studentId">
@@ -138,6 +194,7 @@ const CompareCode: React.FC = () => {
         />
       </div>
 
+      {/* Filter bar for AI analysis toggle */}
       <div style={{ margin: '1rem 0' }}>
         <FilterBar
           options={filterOptions}
@@ -148,8 +205,10 @@ const CompareCode: React.FC = () => {
         />
       </div>
 
+      {/* Submit button */}
       <TTNewButton onClick={handleSubmit}>Compare</TTNewButton>
 
+      {/* Error display section */}
       {errorMsg && (
         <div style={{ marginTop: '1rem' }}>
           <Typography as="p" color="danger">
@@ -158,6 +217,7 @@ const CompareCode: React.FC = () => {
         </div>
       )}
 
+      {/* Soft error display section */}
       {softErr.length > 0 && (
         <div style={{marginTop:'1rem'}}>
           {softErr.map((msg,i) => (
@@ -168,14 +228,17 @@ const CompareCode: React.FC = () => {
         </div>
       )}
 
+      {/* Loading indicator */}
       {isLoading && (
         <div style={{ margin: '2rem 0' }}>
           <Loader size="lg" center overlay />
         </div>
       )}
 
+      {/* Results display section */}
       {responseData && !isLoading && (
         <div style={{ marginTop: '2rem' }}>
+          {/* AI Analysis Conclusion */}
           {responseData.conclusion && (
             <div style={{ marginBottom: '2rem' }}>
               <TTNewCard>
@@ -189,8 +252,10 @@ const CompareCode: React.FC = () => {
             </div>
           )}
 
+          {/* Comparison Results */}
           {responseData.differences && (
             <>
+              {/* Module Specific Differences */}
               {responseData.differences.module_specific_diffs.function_mismatch.length > 0 && (
                 <>
                   <div>
@@ -216,6 +281,7 @@ const CompareCode: React.FC = () => {
                 </>
               )}
 
+              {/* Function Specific Differences */}
               <div style={{ marginBottom: '1rem' }}>
                 <Heading as="h3" visual="h3" color="primary">
                   Function Specific Differences
@@ -238,6 +304,7 @@ const CompareCode: React.FC = () => {
                                   }}
                                   defaultItemKey=""
                                 >
+                                  {/* Strict Comparison Section */}
                                   <AccordionItem itemKey="strict" label="Strict Comparison">
                                     <TTNewCard>
                                       <TTNewCardContent>
@@ -250,6 +317,7 @@ const CompareCode: React.FC = () => {
                                     </TTNewCard>
                                   </AccordionItem>
 
+                                  {/* Structural Comparison Section */}
                                   <AccordionItem 
                                     itemKey="structural" 
                                     label="Structural Comparison"
@@ -262,6 +330,7 @@ const CompareCode: React.FC = () => {
                                     )}
                                   </AccordionItem>
 
+                                  {/* Diff View Section */}
                                   <AccordionItem 
                                     itemKey="diff" 
                                     label="Diff View"

@@ -1,3 +1,26 @@
+"""
+Strict Code Comparison Module
+
+This module provides functionality for performing strict structural comparison between
+teacher and student code using Python's Abstract Syntax Tree (AST). It detects and
+reports various types of differences including:
+- Node type mismatches
+- Operator changes
+- Literal value differences
+- Function call renames
+- Missing or extra statements
+- Identifier changes
+
+The comparison is performed by parsing both code samples into ASTs and recursively
+comparing their structures, generating human-readable difference reports with
+severity levels (info, warning, error).
+
+Dependencies:
+    - ast: Python's Abstract Syntax Tree module
+    - dataclasses: For structured difference reporting
+    - itertools: For handling lists of different lengths
+"""
+
 from __future__ import annotations
 
 import ast
@@ -7,6 +30,17 @@ from typing import List, Literal
 
 @dataclass
 class _DiffEntry:
+    """
+    Represents a single difference found between teacher and student code.
+    
+    Attributes:
+        category (str): Type of difference (e.g., 'Operator', 'Literal', 'NodeType')
+        location (str): Line number where the difference was found
+        teacher (str): Code snippet from teacher's solution
+        student (str): Code snippet from student's solution
+        message (str): Human-readable description of the difference
+        severity (Literal["info", "warning", "error"]): Importance level of the difference
+    """
     category: str                         # Operator | Literal | …
     location: str                         # "line 8"
     teacher: str                          # snippet
@@ -17,6 +51,12 @@ class _DiffEntry:
     ICON = {"info": "ℹ️", "warning": "⚠️", "error": "❌"}
 
     def to_line(self) -> str:
+        """
+        Convert the difference entry into a formatted line for output.
+        
+        Returns:
+            str: Formatted line with icon, location, and message
+        """
         icon = self.ICON[self.severity]
 
         gap_icon = "\u00A0" * 2
@@ -33,12 +73,40 @@ class _DiffEntry:
 
 
 class StrictComparator:
+    """
+    Performs strict structural comparison between teacher and student code using AST.
+    
+    This class implements a recursive AST comparison algorithm that detects various
+    types of differences between two code samples. It handles different types of
+    nodes (expressions, statements, etc.) and generates detailed difference reports.
+    """
+
     @staticmethod
     def _lineno(node: ast.AST, fallback: str | None = None) -> str:
+        """
+        Extract line number from an AST node.
+        
+        Args:
+            node (ast.AST): The AST node to get line number from
+            fallback (str | None): Value to return if node has no line number
+            
+        Returns:
+            str: Line number as string, or fallback value
+        """
         return str(getattr(node, "lineno", fallback if fallback is not None else "?"))
 
     @staticmethod
     def _snippet(src: str, node: ast.AST) -> str:
+        """
+        Extract code snippet from source text for a given AST node.
+        
+        Args:
+            src (str): Original source code
+            node (ast.AST): AST node to extract snippet for
+            
+        Returns:
+            str: Code snippet as string, or string representation of node
+        """
         if hasattr(node, "lineno") and hasattr(node, "end_lineno"):
             lines = src.splitlines()
             lo = max(node.lineno - 1, 0)
@@ -60,6 +128,25 @@ class StrictComparator:
         out: list[_DiffEntry],
         current_line: str | None = None,
     ) -> None:
+        """
+        Recursively compare two AST nodes and record differences.
+        
+        This method implements the core comparison logic, checking for:
+        - Node type mismatches
+        - Operator changes in comparisons
+        - Literal value differences
+        - Function call renames
+        - Missing or extra statements
+        - Identifier changes
+        
+        Args:
+            a (ast.AST): First AST node (teacher's code)
+            b (ast.AST): Second AST node (student's code)
+            a_src (str): Original source code for first node
+            b_src (str): Original source code for second node
+            out (list[_DiffEntry]): List to append differences to
+            current_line (str | None): Current line number for context
+        """
         my_line = cls._lineno(a, fallback=current_line)
 
         if type(a) is not type(b):
@@ -166,6 +253,16 @@ class StrictComparator:
 
     @classmethod
     def compare(cls, student_code: str, teacher_code: str) -> List[str]:
+        """
+        Compare student code against teacher code and generate difference report.
+        
+        Args:
+            student_code (str): Student's code to check
+            teacher_code (str): Teacher's reference code
+            
+        Returns:
+            List[str]: List of formatted difference messages, or syntax error message
+        """
         try:
             s_tree = ast.parse(student_code)
             t_tree = ast.parse(teacher_code)
