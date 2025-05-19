@@ -1,12 +1,32 @@
 # 🔧 Code Comparison – Technical Specification
 
-## 🌍 Live Deployment
+## 🌍 Live
 
 The application is publicly accessible at:
 
 👉 https://cs.taltech.ee/services/codecomparison/
 
 This version is deployed to a TalTech server. It provides access to the web interface that in turn provides access to the backend service for comparing Python code solutions.
+
+### Testing the Application
+
+To test the application, you can use the test repository with the following parameters:
+
+1. Student UNI-ID: `ronook` (test repository made by the author)
+2. Exercise number: Choose from available exercises:
+   - EX01
+   - EX02
+   - EX04
+   - EX06
+   - EX08
+3. Year: `2024` (Note: 2025 repositories are not yet created)
+4. Optional: Enable AI analysis for written summary
+
+**Note:**
+
+- Processing time varies between 20-45 seconds, sometimes longer if one model fails and falls back to another
+- Using exercise numbers other than the ones mentioned earlier will result in an error
+- The AI analysis filter is recommended to be enabled for a complete comparison report
 
 ## 🚀 Local Development
 
@@ -16,6 +36,24 @@ This version is deployed to a TalTech server. It provides access to the web inte
 - Node.js 16+
 - npm or yarn
 - Git
+
+### Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```bash
+# GitLab Configuration
+GITLAB_PRIVATE_TOKEN=your_gitlab_private_token
+GITLAB_API_URL=your_gitlab_api_url
+
+# AI Model API Keys
+OPENAI_API_KEY=your_openai_api_key
+GEMINI_API_KEY=your_gemini_api_key
+
+# NPM Configuration
+NPM_USER=your_npm_username
+NPM_PASS=your_npm_password
+```
 
 ### Backend Setup
 
