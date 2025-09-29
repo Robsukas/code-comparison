@@ -1,5 +1,7 @@
 # 🔧 Code Comparison – Technical Specification
 
+# NOTE: Testing via public interface is currently deprecated due to GitLab key issues regarding deprecation of university API key access.
+
 ## 🌍 Live
 
 The application is publicly accessible at:
